@@ -72,12 +72,12 @@ export class GameScene extends Phaser.Scene {
 
     // checking for input
     this.input.keyboard.on("keyup_UP", this.jump, this);
-    
+
     document.addEventListener("keyup_DOWN", this.resumeGame);
   }
 
   resumeGame(){
-    this.scene.resume();
+    this.scene.resume("GameScene");
   }
   // the core of the script: platform are added from the pool or created on the fly
   addPlatform(platformWidth: number, posX: number) {
