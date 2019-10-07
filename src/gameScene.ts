@@ -72,7 +72,7 @@ export class GameScene extends Phaser.Scene {
 
     // checking for input
     this.input.keyboard.on("keyup_UP", this.jump, this);
-    
+
     document.addEventListener("keyup_DOWN", this.resumeGame);
   }
 
