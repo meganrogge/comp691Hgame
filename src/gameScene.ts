@@ -34,7 +34,7 @@ export class GameScene extends Phaser.Scene {
   preload(): void {
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
-    this.load.image("cookie", "assets/cookie.jpg");
+    this.load.image("cookie", "assets/cookie.png");
   }
 
   createButtons(): void {
@@ -58,7 +58,7 @@ export class GameScene extends Phaser.Scene {
     // adding a platform to the game, the arguments are platform width and x position
     this.addPlatform(+this.game.config.width, +this.game.config.width / 2);
 
-    this.addCookie(30, +this.game.config.width*2/3);
+    this.addCookie(100, +this.game.config.width*2/3);
     // adding the player;
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,
@@ -98,7 +98,7 @@ export class GameScene extends Phaser.Scene {
       gameOptions.spawnRange[1]
     );
   }
-  addCookie(platformWidth: number, posX: number) {
+  addCookie(cookieSize: number, posX: number) {
     let cookie: Phaser.Physics.Arcade.Sprite;
     if (this.cookiePool.getLength()) {
       cookie = this.cookiePool.getFirst();
@@ -113,14 +113,11 @@ export class GameScene extends Phaser.Scene {
         "cookie"
       );
       cookie.setImmovable(true);
-      cookie.setVelocityX(gameOptions.platformStartSpeed * -1);
+      cookie.setVelocityX(gameOptions.platformStartSpeed * -.5);
       this.cookieGroup.add(cookie);
     }
-    cookie.displayWidth = platformWidth;
-    this.nextPlatformDistance = Phaser.Math.Between(
-      gameOptions.spawnRange[0],
-      gameOptions.spawnRange[1]
-    );
+    cookie.displayWidth = cookieSize;
+    cookie.displayHeight = cookieSize;
   }
   // // the player jumps when on the ground, or once in the air as long as there are jumps left and the first jump was on the ground
   jump() {
@@ -142,24 +139,29 @@ export class GameScene extends Phaser.Scene {
     // }
     this.player.x = gameOptions.playerStartPosition;
 
-    // // recycling platforms
-    // let minDistance = +this.game.config.width;
-    // this.platformGroup.getChildren().forEach(function(platform: Platform) {
-    //   let platformDistance =
-    //     +this.game.config.width - platform.x - platform.displayWidth / 2;
-    //   minDistance = Math.min(minDistance, platformDistance);
-    // }, this);
+    // recycling cookies
+    let minDistance = +this.game.config.width;
+    this.cookieGroup.getChildren().forEach(function(cookie: Phaser.Physics.Arcade.Sprite) {
+      let cookieDistance =
+        +this.game.config.width - cookie.x - cookie.displayWidth / 2;
+      minDistance = Math.min(minDistance, cookieDistance);
+    }, this);
 
-    // adding new platforms
-    // if (minDistance > this.nextPlatformDistance) {
-      // var nextPlatformWidth = Phaser.Math.Between(
-      //   gameOptions.platformSizeRange[0],
-      //   gameOptions.platformSizeRange[1]
-      // );
-      this.addPlatform(
-        +this.game.config.width,
+   // adding new cookies
+    if (minDistance > this.nextPlatformDistance) {
+      var nextCookieWidth = Phaser.Math.Between(
+        gameOptions.platformSizeRange[0],
+        gameOptions.platformSizeRange[1]
+      );
+      this.addCookie(
+        +nextCookieWidth,
         +this.game.config.width + +this.game.config.width / 2
       );
-    
+      
  }
+ this.addPlatform(
+  +this.game.config.width,
+  +this.game.config.width + +this.game.config.width / 2
+);
+}
 }
