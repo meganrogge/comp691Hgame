@@ -72,6 +72,12 @@ export class GameScene extends Phaser.Scene {
 
     // checking for input
     this.input.keyboard.on("keyup_UP", this.jump, this);
+    
+    document.addEventListener("keyup_DOWN", this.resumeGame);
+  }
+
+  resumeGame(){
+    this.scene.resume();
   }
   // the core of the script: platform are added from the pool or created on the fly
   addPlatform(platformWidth: number, posX: number) {
@@ -145,8 +151,15 @@ export class GameScene extends Phaser.Scene {
       let cookieDistance =
         +this.game.config.width - cookie.x - cookie.displayWidth / 2;
       minDistance = Math.min(minDistance, cookieDistance);
+      if(cookie.x < 0){
+        this.cookieGroup.remove(cookie);
+      }
+      if(cookie.x < 200){
+        this.createButtons();
+        this.scene.pause("GameScene");
+      }
     }, this);
-
+    
    // adding new cookies
     if (minDistance > this.nextPlatformDistance) {
       var nextCookieWidth = Phaser.Math.Between(
