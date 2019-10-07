@@ -145,8 +145,15 @@ export class GameScene extends Phaser.Scene {
       let cookieDistance =
         +this.game.config.width - cookie.x - cookie.displayWidth / 2;
       minDistance = Math.min(minDistance, cookieDistance);
+      if(cookie.x < 0){
+        this.cookieGroup.remove(cookie);
+      }
+      if(cookie.x == 200){
+        console.log(cookie.x);
+        this.game.scene.pause;
+      }
     }, this);
-
+    
    // adding new cookies
     if (minDistance > this.nextPlatformDistance) {
       var nextCookieWidth = Phaser.Math.Between(
