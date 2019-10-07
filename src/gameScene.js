@@ -22,6 +22,10 @@ export class GameScene extends Phaser.Scene {
         this.load.image("platform", "assets/platform.png");
         this.load.image("player", "assets/player.png");
     }
+    createButtons() {
+        var style = { font: "bold 32x Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle", backgroundColor: "#99badd" };
+        this.add.text(300, 350, "Jump?", style);
+    }
     create() {
         this.platformGroup = this.add.group({
             removeCallback: platform => this.platformPool.add(platform)
@@ -58,37 +62,15 @@ export class GameScene extends Phaser.Scene {
         platform.displayWidth = platformWidth;
         this.nextPlatformDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
     }
-    // the player jumps when on the ground, or once in the air as long as there are jumps left and the first jump was on the ground
+    // // the player jumps when on the ground, or once in the air as long as there are jumps left and the first jump was on the ground
     jump() {
         if (this.player.body.touching.down ||
             (this.playerJumps > 0 && this.playerJumps < gameOptions.jumps)) {
             if (this.player.body.touching.down) {
-                this.playerJumps = 0;
+                this.playerJumps = 2;
             }
             this.player.setVelocityY(gameOptions.jumpForce * -1);
             this.playerJumps++;
-        }
-    }
-    update() {
-        // game over
-        if (this.player.y > this.game.config.height) {
-            this.scene.start("ScoreScene", { score: this.playerJumps });
-        }
-        this.player.x = gameOptions.playerStartPosition;
-        // recycling platforms
-        let minDistance = +this.game.config.width;
-        this.platformGroup.getChildren().forEach(function (platform) {
-            let platformDistance = +this.game.config.width - platform.x - platform.displayWidth / 2;
-            minDistance = Math.min(minDistance, platformDistance);
-            if (platform.x < -platform.displayWidth / 2) {
-                this.platformGroup.killAndHide(platform);
-                this.platformGroup.remove(platform);
-            }
-        }, this);
-        // adding new platforms
-        if (minDistance > this.nextPlatformDistance) {
-            var nextPlatformWidth = Phaser.Math.Between(gameOptions.platformSizeRange[0], gameOptions.platformSizeRange[1]);
-            this.addPlatform(nextPlatformWidth, +this.game.config.width + nextPlatformWidth / 2);
         }
     }
 }
