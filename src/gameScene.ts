@@ -29,16 +29,30 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  init(/*params: any*/): void {}
+  init(/*params: any*/): void { }
 
   preload(): void {
+    this.printSceneInfo();
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
     this.load.image("cookie", "assets/cookie.png");
   }
+  
+  printSceneInfo(){
+    console.log("is sleeping " +this.scene.isSleeping());
+    console.log("is paused " +this.scene.isPaused());
+    console.log("is visible " +this.scene.isVisible());
+    console.log("is active " +this.scene.isActive());
+  }
 
   createButtons(): void {
-    var style = { font: "bold 32x Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle", backgroundColor: "#99badd" };
+    var style = {
+      font: "bold 32x Arial",
+      fill: "#fff",
+      boundsAlignH: "center",
+      boundsAlignV: "middle",
+      backgroundColor: "#99badd"
+    };
     this.add.text(300, 350, "Jump?", style);
   }
 
@@ -58,7 +72,7 @@ export class GameScene extends Phaser.Scene {
     // adding a platform to the game, the arguments are platform width and x position
     this.addPlatform(+this.game.config.width, +this.game.config.width / 2);
 
-    this.addCookie(100, +this.game.config.width*2/3);
+    this.addCookie(100, (+this.game.config.width * 2) / 3);
     // adding the player;
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,
@@ -72,13 +86,36 @@ export class GameScene extends Phaser.Scene {
 
     // checking for input
     this.input.keyboard.on("keyup_UP", this.jump, this);
-
-    document.addEventListener("keyup_DOWN", this.resumeGame);
+    //  this.input.keyboard.on("keyup_DOWN", this.resumeGame, this);
+    document.addEventListener("keydown", e => e.keyCode == 38 ? this.resumeGame() : this.scene.resume());
   }
 
-  resumeGame(){
+  resumeGame() {
     this.scene.resume("GameScene");
+    console.log("After resumeGame is called");
+    this.printSceneInfo();
+    this.player.setVelocityY(200);
+    this.playerJumps = 3;
+    this.jump();
+    let minDistance = +this.game.config.width;
+    this.cookieGroup
+      .getChildren()
+      .forEach(function (cookie: Phaser.Physics.Arcade.Sprite) {
+        let cookieDistance =
+          +this.game.config.width - cookie.x - cookie.displayWidth / 2;
+        minDistance = Math.min(minDistance, cookieDistance);
+
+        if (this.playerNearCookie(cookie)) {
+          cookie.active = false;
+          cookie.visible = false;
+        }
+      }, this);
   }
+
+  playerNearCookie(cookie: Phaser.Physics.Arcade.Sprite) {
+    return cookie.x-200 > 0 && cookie.x-200 < 2;
+  }
+
   // the core of the script: platform are added from the pool or created on the fly
   addPlatform(platformWidth: number, posX: number) {
     let platform: Platform;
@@ -115,11 +152,11 @@ export class GameScene extends Phaser.Scene {
     } else {
       cookie = this.physics.add.sprite(
         posX,
-        +this.game.config.height/2,
+        +this.game.config.height / 2,
         "cookie"
       );
       cookie.setImmovable(true);
-      cookie.setVelocityX(gameOptions.platformStartSpeed * -.5);
+      cookie.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.cookieGroup.add(cookie);
     }
     cookie.displayWidth = cookieSize;
@@ -143,24 +180,27 @@ export class GameScene extends Phaser.Scene {
     // if (this.player.y > this.game.config.height) {
     //   this.scene.start("ScoreScene", { score: this.playerJumps });
     // }
+
     this.player.x = gameOptions.playerStartPosition;
 
     // recycling cookies
     let minDistance = +this.game.config.width;
-    this.cookieGroup.getChildren().forEach(function(cookie: Phaser.Physics.Arcade.Sprite) {
-      let cookieDistance =
-        +this.game.config.width - cookie.x - cookie.displayWidth / 2;
-      minDistance = Math.min(minDistance, cookieDistance);
-      if(cookie.x < 0){
-        this.cookieGroup.remove(cookie);
-      }
-      if(cookie.x < 200){
-        this.createButtons();
-        this.scene.pause("GameScene");
-      }
-    }, this);
-    
-   // adding new cookies
+    this.cookieGroup
+      .getChildren()
+      .forEach(function (cookie: Phaser.Physics.Arcade.Sprite) {
+        let cookieDistance =
+          +this.game.config.width - cookie.x - cookie.displayWidth / 2;
+        minDistance = Math.min(minDistance, cookieDistance);
+
+        if (this.playerNearCookie(cookie)) {
+          this.createButtons();
+          this.scene.pause("GameScene");
+          console.log("After game is paused");
+          this.printSceneInfo();
+        }
+      }, this);
+
+    //adding new cookies
     if (minDistance > this.nextPlatformDistance) {
       var nextCookieWidth = Phaser.Math.Between(
         gameOptions.platformSizeRange[0],
@@ -170,11 +210,11 @@ export class GameScene extends Phaser.Scene {
         +nextCookieWidth,
         +this.game.config.width + +this.game.config.width / 2
       );
-      
- }
- this.addPlatform(
-  +this.game.config.width,
-  +this.game.config.width + +this.game.config.width / 2
-);
-}
+
+    }
+    this.addPlatform(
+      +this.game.config.width,
+      +this.game.config.width + +this.game.config.width / 2
+    );
+  }
 }
