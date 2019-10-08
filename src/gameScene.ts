@@ -38,15 +38,16 @@ export class GameScene extends Phaser.Scene {
     this.load.image("player", "assets/player.png");
     this.load.image("cookie", "assets/cookie.png");
   }
-  
-  printSceneInfo(){
-    console.log("is sleeping " +this.scene.isSleeping());
-    console.log("is paused " +this.scene.isPaused());
-    console.log("is visible " +this.scene.isVisible());
-    console.log("is active " +this.scene.isActive());
+
+  printSceneInfo() {
+    console.log("is sleeping " + this.scene.isSleeping());
+    console.log("is paused " + this.scene.isPaused());
+    console.log("is visible " + this.scene.isVisible());
+    console.log("is active " + this.scene.isActive());
   }
 
   create(): void {
+    // create jump? button
     var style = {
       font: "128px Arial Bold",
       fill: "#fff",
@@ -56,6 +57,7 @@ export class GameScene extends Phaser.Scene {
     };
     this.buttons = this.add.text(300, 350, "Jump?", style);
     this.buttons.setVisible(false);
+
     this.platformGroup = this.add.group({
       removeCallback: platform => this.platformPool.add(platform)
     });
@@ -71,7 +73,9 @@ export class GameScene extends Phaser.Scene {
     // adding a platform to the game, the arguments are platform width and x position
     this.addPlatform(+this.game.config.width, +this.game.config.width / 2);
 
+    // adding a cookie to the game
     this.addCookie(100, (+this.game.config.width * 2) / 3);
+
     // adding the player;
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,
@@ -79,17 +83,17 @@ export class GameScene extends Phaser.Scene {
       "player"
     );
     this.player.setGravityY(gameOptions.playerGravity);
-    
-    this.physics.add.collider(this.player, this.cookieGroup, function(player, cookie) {
+
+    // adding a cookie collider so cookie disappears upon collision with player
+    this.physics.add.collider(this.player, this.cookieGroup, function (player, cookie) {
       cookie.destroy();
     });
 
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
 
-    // checking for input
+    // to do : disable input when scene isn't paused
     this.input.keyboard.on("keyup_UP", this.jump, this);
-    //  this.input.keyboard.on("keyup_DOWN", this.resumeGame, this);
     document.addEventListener("keydown", e => e.keyCode == 38 ? this.resumeGameAndJump() : e.keyCode == 40 ? this.resumeGameAndRun() : this.scene.pause("GameScene"));
   }
 
@@ -104,22 +108,8 @@ export class GameScene extends Phaser.Scene {
     this.buttons.setVisible(false);
   }
 
-  nearestCookie() {
-    let nearCookieY : number;
-    this.cookieGroup
-    .getChildren()
-    .forEach(function (cookie: Phaser.Physics.Arcade.Sprite) {
-      if (this.playerNearCookie(cookie)) {
-        nearCookieY = cookie.y;
-        console.log(nearCookieY);
-      } 
-    }, this);
-    return nearCookieY;
-  }
-
   playerNearCookie(cookie: Phaser.Physics.Arcade.Sprite) {
-    console.log(cookie.y);
-    return cookie.x-200 > 0 && cookie.x-200 < 2;
+    return cookie.x - 200 > 0 && cookie.x - 200 < 2;
   }
 
   // the core of the script: platform are added from the pool or created on the fly
@@ -183,11 +173,6 @@ export class GameScene extends Phaser.Scene {
     }
   }
   update() {
-    // game over
-    // if (this.player.y > this.game.config.height) {
-    //   this.scene.start("ScoreScene", { score: this.playerJumps });
-    // }
-
     this.player.x = gameOptions.playerStartPosition;
 
     // recycling cookies
@@ -204,7 +189,7 @@ export class GameScene extends Phaser.Scene {
           this.scene.pause("GameScene");
           console.log("After game is paused");
           this.printSceneInfo();
-        } 
+        }
       }, this);
 
     //adding new cookies
@@ -219,6 +204,7 @@ export class GameScene extends Phaser.Scene {
       );
 
     }
+    //adding a platform
     this.addPlatform(
       +this.game.config.width,
       +this.game.config.width + +this.game.config.width / 2
