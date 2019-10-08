@@ -217,4 +217,8 @@ export class GameScene extends Phaser.Scene {
       +this.game.config.width + +this.game.config.width / 2
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> b7b593429a494d5b94207d2508ecdc4e0883f77e
