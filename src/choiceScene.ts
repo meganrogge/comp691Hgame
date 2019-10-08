@@ -14,19 +14,18 @@ let gameOptions = {
 
 type Platform = Phaser.Physics.Arcade.Sprite;
 
-export class GameScene extends Phaser.Scene {
+export class ChoiceScene extends Phaser.Scene {
   platformGroup: Phaser.GameObjects.Group;
   platformPool: Phaser.GameObjects.Group;
   cookieGroup: Phaser.GameObjects.Group;
   cookiePool: Phaser.GameObjects.Group;
   player: Phaser.Physics.Arcade.Sprite;
-  buttons: Phaser.GameObjects.Text;
   playerJumps = 0;
   nextPlatformDistance = 0;
 
   constructor() {
     super({
-      key: "GameScene"
+      key: "ChoiceScene"
     });
   }
 
@@ -46,16 +45,18 @@ export class GameScene extends Phaser.Scene {
     console.log("is active " +this.scene.isActive());
   }
 
-  create(): void {
+  createButtons(): void {
     var style = {
-      font: "128px Arial Bold",
+      font: "bold 32x Arial",
       fill: "#fff",
       boundsAlignH: "center",
       boundsAlignV: "middle",
-      backgroundColor: "#FFB6C1"
+      backgroundColor: "#99badd"
     };
-    this.buttons = this.add.text(300, 350, "Jump?", style);
-    this.buttons.setVisible(false);
+    this.add.text(300, 350, "Jump?", style);
+  }
+
+  create(): void {
     this.platformGroup = this.add.group({
       removeCallback: platform => this.platformPool.add(platform)
     });
@@ -79,10 +80,6 @@ export class GameScene extends Phaser.Scene {
       "player"
     );
     this.player.setGravityY(gameOptions.playerGravity);
-    
-    this.physics.add.collider(this.player, this.cookieGroup, function(player, cookie) {
-      cookie.destroy();
-    });
 
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
@@ -90,35 +87,32 @@ export class GameScene extends Phaser.Scene {
     // checking for input
     this.input.keyboard.on("keyup_UP", this.jump, this);
     //  this.input.keyboard.on("keyup_DOWN", this.resumeGame, this);
-    document.addEventListener("keydown", e => e.keyCode == 38 ? this.resumeGameAndJump() : e.keyCode == 40 ? this.resumeGameAndRun() : this.scene.pause("GameScene"));
+    document.addEventListener("keydown", e => e.keyCode == 38 ? this.resumeGame() : this.scene.resume());
   }
 
-  resumeGameAndJump() {
-    this.scene.resume("GameScene");
+  resumeGame() {
+    this.scene.resume("ChoiceScene");
+    console.log("After resumeGame is called");
+    this.printSceneInfo();
+    this.player.setVelocityY(200);
+    this.playerJumps = 3;
     this.jump();
-    this.buttons.setVisible(false);
-  }
-
-  resumeGameAndRun() {
-    this.scene.resume("GameScene");
-    this.buttons.setVisible(false);
-  }
-
-  nearestCookie() {
-    let nearCookieY : number;
+    let minDistance = +this.game.config.width;
     this.cookieGroup
-    .getChildren()
-    .forEach(function (cookie: Phaser.Physics.Arcade.Sprite) {
-      if (this.playerNearCookie(cookie)) {
-        nearCookieY = cookie.y;
-        console.log(nearCookieY);
-      } 
-    }, this);
-    return nearCookieY;
+      .getChildren()
+      .forEach(function (cookie: Phaser.Physics.Arcade.Sprite) {
+        let cookieDistance =
+          +this.game.config.width - cookie.x - cookie.displayWidth / 2;
+        minDistance = Math.min(minDistance, cookieDistance);
+
+        if (this.playerNearCookie(cookie)) {
+          cookie.active = false;
+          cookie.visible = false;
+        }
+      }, this);
   }
 
   playerNearCookie(cookie: Phaser.Physics.Arcade.Sprite) {
-    console.log(cookie.y);
     return cookie.x-200 > 0 && cookie.x-200 < 2;
   }
 
@@ -177,8 +171,7 @@ export class GameScene extends Phaser.Scene {
       if (this.player.body.touching.down) {
         this.playerJumps = 2;
       }
-      this.player.setVelocityY(gameOptions.jumpForce * -1 * 2);
-      console.log(gameOptions.jumpForce * -1 * 2);
+      this.player.setVelocityY(gameOptions.jumpForce * -1);
       this.playerJumps++;
     }
   }
@@ -200,11 +193,11 @@ export class GameScene extends Phaser.Scene {
         minDistance = Math.min(minDistance, cookieDistance);
 
         if (this.playerNearCookie(cookie)) {
-          this.buttons.setVisible(true);
-          this.scene.pause("GameScene");
+          this.createButtons();
+          this.scene.pause("ChoiceScene");
           console.log("After game is paused");
           this.printSceneInfo();
-        } 
+        }
       }, this);
 
     //adding new cookies
