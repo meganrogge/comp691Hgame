@@ -2,7 +2,7 @@ import "phaser";
 import { WelcomeScene } from "./welcomeScene";
 import { GameScene } from "./gameScene";
 import { ScoreScene } from "./scoreScene";
-import { ChoiceScene } from "./choiceScene";  
+import {GameplayChoiceScene } from "./gameplayChoiceScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   title: "Runner",
@@ -10,7 +10,7 @@ const config: Phaser.Types.Core.GameConfig = {
   width: 1334,
   height: 750,
   parent: "game",
-  scene: [WelcomeScene, GameScene, ChoiceScene, ScoreScene],
+  scene: [GameplayChoiceScene, WelcomeScene, GameScene, ScoreScene],
   physics: {
     default: "arcade",
     arcade: {

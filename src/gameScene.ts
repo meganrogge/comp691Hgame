@@ -37,6 +37,7 @@ export class GameScene extends Phaser.Scene {
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
     this.load.image("cookie", "assets/cookie.png");
+    //this.load.spritesheet('player-frames', 'assets/sprite_sheets/PlayerRun.png');
   }
 
   printSceneInfo() {
@@ -83,7 +84,7 @@ export class GameScene extends Phaser.Scene {
       "player"
     );
     this.player.setGravityY(gameOptions.playerGravity);
-
+    
     // adding a cookie collider so cookie disappears upon collision with player
     this.physics.add.collider(this.player, this.cookieGroup, function (player, cookie) {
       cookie.destroy();
@@ -158,7 +159,8 @@ export class GameScene extends Phaser.Scene {
     cookie.displayWidth = cookieSize;
     cookie.displayHeight = cookieSize;
   }
-  // // the player jumps when on the ground, or once in the air as long as there are jumps left and the first jump was on the ground
+  // // the player jumps when on the ground, or once in the air as long as there are jumps left 
+  // and the first jump was on the ground
   jump() {
     if (
       this.player.body.touching.down ||
@@ -168,7 +170,6 @@ export class GameScene extends Phaser.Scene {
         this.playerJumps = 2;
       }
       this.player.setVelocityY(gameOptions.jumpForce * -1 * 2);
-      console.log(gameOptions.jumpForce * -1 * 2);
       this.playerJumps++;
     }
   }
@@ -187,8 +188,6 @@ export class GameScene extends Phaser.Scene {
         if (this.playerNearCookie(cookie)) {
           this.buttons.setVisible(true);
           this.scene.pause("GameScene");
-          console.log("After game is paused");
-          this.printSceneInfo();
         }
       }, this);
 
