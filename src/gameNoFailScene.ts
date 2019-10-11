@@ -15,7 +15,7 @@ let gameOptions = {
 
 type Platform = Phaser.Physics.Arcade.Sprite;
 
-export class GameScene extends Phaser.Scene {
+export class GameNoFailScene extends Phaser.Scene {
   platformGroup: Phaser.GameObjects.Group;
   platformPool: Phaser.GameObjects.Group;
   chosenObjectGroup: Phaser.GameObjects.Group;
@@ -27,7 +27,7 @@ export class GameScene extends Phaser.Scene {
 
   constructor() {
     super({
-      key: "GameScene"
+      key: "GameNoFailScene"
     });
   }
 
@@ -101,17 +101,17 @@ export class GameScene extends Phaser.Scene {
 
     // to do : disable input when scene isn't paused
     this.input.keyboard.on("keyup_UP", this.jump, this);
-    document.addEventListener("keydown", e => e.keyCode == 38 ? this.resumeGameAndJump() : e.keyCode == 40 ? this.resumeGameAndRun() : this.scene.pause("GameScene"));
+    document.addEventListener("keydown", e => e.keyCode == 38 ? this.resumeGameAndJump() : e.keyCode == 40 ? this.resumeGameAndRun() : this.scene.pause("GameNoFailScene"));
   }
 
   resumeGameAndJump() {
-    this.scene.resume("GameScene");
+    this.scene.resume("GameNoFailScene");
     this.jump();
     this.buttons.setVisible(false);
   }
 
   resumeGameAndRun() {
-    this.scene.resume("GameScene");
+    this.scene.resume("GameNoFailScene");
     this.buttons.setVisible(false);
   }
 
@@ -193,7 +193,7 @@ export class GameScene extends Phaser.Scene {
 
         if (this.playerNearchosenObject(chosenObject)) {
           this.buttons.setVisible(true);
-          this.scene.pause("GameScene");
+          this.scene.pause("GameNoFailScene");
         }
       }, this);
 
