@@ -30,14 +30,14 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  init(/*params: any*/): void { }
+  // init(/*params: any*/): void { }
 
   preload(): void {
     this.printSceneInfo();
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
     this.load.image("cookie", "assets/cookie.png");
-    //this.load.spritesheet('player-frames', 'assets/sprite_sheets/PlayerRun.png');
+    this.load.image("sports", "assets/sports.png");
   }
 
   printSceneInfo() {
@@ -47,8 +47,13 @@ export class GameScene extends Phaser.Scene {
     console.log("is active " + this.scene.isActive());
   }
 
-  create(): void {
+  create(data): void {
     // create jump? button
+    // if(data){
+
+    // } else if(data.contains("sports")){
+
+    // }
     var style = {
       font: "128px Arial Bold",
       fill: "#fff",
