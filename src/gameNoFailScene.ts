@@ -100,8 +100,8 @@ export class GameNoFailScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platformGroup);
 
     // to do : disable input when scene isn't paused
-    this.input.keyboard.on("keyup_UP", this.jump, this);
-    document.addEventListener("keydown", e => e.keyCode == 38 ? this.resumeGameAndJump() : e.keyCode == 40 ? this.resumeGameAndRun() : this.scene.pause("GameNoFailScene"));
+    this.input.keyboard.on("keyup_ENTER", this.jump, this);
+    document.addEventListener("keydown", e => e.keyCode == 13 ? this.resumeGameAndJump() : e.keyCode == 32 ? this.resumeGameAndRun() : this.scene.pause("GameScene"));
   }
 
   resumeGameAndJump() {
