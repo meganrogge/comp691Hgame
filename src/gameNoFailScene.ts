@@ -180,6 +180,12 @@ export class GameNoFailScene extends Phaser.Scene {
     }
   }
   update() {
+
+    if(!this.scene.isPaused()){
+      this.input.enabled = true;
+    } else {
+      this.input.enabled = false;
+    }
     this.player.x = gameOptions.playerStartPosition;
 
     // recycling chosenObjects
