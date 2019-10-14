@@ -25,6 +25,7 @@ export class GameScene extends Phaser.Scene {
   runButton: Phaser.GameObjects.Text;
   playerJumps = 0;
   nextPlatformDistance = 0;
+  index: number;
   constructor() {
     super({
       key: "GameScene"
@@ -49,8 +50,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(data): void {
-    let index = 0;
     console.log(data);
+    this.index = 0;
     if(data == "cookie"){
       gameOptions.chosenObject = "cookie";
     } else if(data == "sports"){
@@ -111,40 +112,38 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platformGroup);
     // to do : disable input when scene isn't paused
     
-    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode, index) : this.scene.resume("GameScene"));
+    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode) : this.scene.resume("GameScene"));
     // document.addEventListener("keydown", e => e.keyCode == 13 ? this.index % 2 == 0 ? this.resumeGameAndJump() : this.resumeGameAndRun(): this.scene.pause("GameScene"));
   }
 
-  dealWithInput(key, index){
-    
-    console.log(index);
-    if(this.scene.isPaused){
+  dealWithInput(key){
+    this.printSceneInfo();
+    console.log(this.index);
+    if(this.scene.isPaused("GameScene")){
       if(key == 13){
         //enter
-        if(index % 2 == 0){
+        if(this.index % 2 == 0){
           this.resumeGameAndJump();
         } else {
           this.resumeGameAndRun();
         }
       } else if(key == 32){
         //space
-        this.dealWithButtons(index);
+        this.dealWithButtons();
       }
     }
   }
 
-  dealWithButtons(index){
-    if(index % 2 == 0){
+  dealWithButtons(){
+    if(this.index % 2 == 1){
       this.jumpButton.setBackgroundColor("#FFFF33");
       this.runButton.setBackgroundColor("#fff");
     } else {
       this.runButton.setBackgroundColor("#FFFF33");
       this.jumpButton.setBackgroundColor("#fff");
     }
-    index++;
-    this.scene.resume("GameScene")
+    this.index++;
   }
-
   resumeGameAndJump() {
     this.scene.resume("GameScene");
     this.jump();

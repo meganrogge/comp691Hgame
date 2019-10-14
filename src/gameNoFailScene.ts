@@ -10,7 +10,7 @@ let gameOptions = {
   jumpForce: 400,
   playerStartPosition: 200,
   jumps: 2,
-  chosenObject: null,
+  chosenObject: null
 };
 
 type Platform = Phaser.Physics.Arcade.Sprite;
@@ -21,10 +21,11 @@ export class GameNoFailScene extends Phaser.Scene {
   chosenObjectGroup: Phaser.GameObjects.Group;
   chosenObjectPool: Phaser.GameObjects.Group;
   player: Phaser.Physics.Arcade.Sprite;
-  buttons: Phaser.GameObjects.Text;
+  jumpButton: Phaser.GameObjects.Text;
+  runButton: Phaser.GameObjects.Text;
   playerJumps = 0;
   nextPlatformDistance = 0;
-
+  index: number;
   constructor() {
     super({
       key: "GameNoFailScene"
@@ -50,20 +51,31 @@ export class GameNoFailScene extends Phaser.Scene {
 
   create(data): void {
     console.log(data);
+    this.index = 0;
     if(data == "cookie"){
       gameOptions.chosenObject = "cookie";
     } else if(data == "sports"){
       gameOptions.chosenObject = "sports";
     }
-    var style = {
+    var selectedStyle = {
       font: "128px Arial Bold",
-      fill: "#fff",
       boundsAlignH: "center",
       boundsAlignV: "middle",
-      backgroundColor: "#FFB6C1"
+      fill: "#99badd",
+      backgroundColor: "#FFFF33"
     };
-    this.buttons = this.add.text(300, 350, "Jump?", style);
-    this.buttons.setVisible(false);
+    var style = {
+      font: "128px Arial Bold",
+      boundsAlignH: "center",
+      boundsAlignV: "middle",
+      fill: "#99badd",
+      backgroundColor: "#fff"
+    };
+    this.jumpButton = this.add.text(300, 350, "Jump", selectedStyle);
+    this.jumpButton.setVisible(false);
+
+    this.runButton = this.add.text(700, 350, "Run", style);
+    this.runButton.setVisible(false);
 
     this.platformGroup = this.add.group({
       removeCallback: platform => this.platformPool.add(platform)
@@ -98,21 +110,51 @@ export class GameNoFailScene extends Phaser.Scene {
 
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
-
     // to do : disable input when scene isn't paused
-    this.input.keyboard.on("keyup_ENTER", this.jump, this);
-    document.addEventListener("keydown", e => e.keyCode == 13 ? this.resumeGameAndJump() : e.keyCode == 32 ? this.resumeGameAndRun() : this.scene.pause("GameScene"));
+    
+    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode) : this.scene.resume("GameNoFailScene"));
+    // document.addEventListener("keydown", e => e.keyCode == 13 ? this.index % 2 == 0 ? this.resumeGameAndJump() : this.resumeGameAndRun(): this.scene.pause("GameNoFailScene"));
   }
 
+  dealWithInput(key){
+    this.printSceneInfo();
+    console.log(this.index);
+    if(this.scene.isPaused("GameNoFailScene")){
+      if(key == 13){
+        //enter
+        if(this.index % 2 == 0){
+          this.resumeGameAndJump();
+        } else {
+          this.resumeGameAndRun();
+        }
+      } else if(key == 32){
+        //space
+        this.dealWithButtons();
+      }
+    }
+  }
+
+  dealWithButtons(){
+    if(this.index % 2 == 1){
+      this.jumpButton.setBackgroundColor("#FFFF33");
+      this.runButton.setBackgroundColor("#fff");
+    } else {
+      this.runButton.setBackgroundColor("#FFFF33");
+      this.jumpButton.setBackgroundColor("#fff");
+    }
+    this.index++;
+  }
   resumeGameAndJump() {
     this.scene.resume("GameNoFailScene");
     this.jump();
-    this.buttons.setVisible(false);
+    this.jumpButton.setVisible(false);
+    this.runButton.setVisible(false);
   }
 
   resumeGameAndRun() {
     this.scene.resume("GameNoFailScene");
-    this.buttons.setVisible(false);
+    this.jumpButton.setVisible(false);
+    this.runButton.setVisible(false);
   }
 
   playerNearchosenObject(chosenObject: Phaser.Physics.Arcade.Sprite) {
@@ -180,12 +222,6 @@ export class GameNoFailScene extends Phaser.Scene {
     }
   }
   update() {
-
-    if(!this.scene.isPaused()){
-      this.input.enabled = true;
-    } else {
-      this.input.enabled = false;
-    }
     this.player.x = gameOptions.playerStartPosition;
 
     // recycling chosenObjects
@@ -198,7 +234,8 @@ export class GameNoFailScene extends Phaser.Scene {
         minDistance = Math.min(minDistance, chosenObjectDistance);
 
         if (this.playerNearchosenObject(chosenObject)) {
-          this.buttons.setVisible(true);
+          this.jumpButton.setVisible(true);
+          this.runButton.setVisible(true);
           this.scene.pause("GameNoFailScene");
         }
       }, this);
