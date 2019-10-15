@@ -23,9 +23,11 @@ export class GameNoFailScene extends Phaser.Scene {
   player: Phaser.Physics.Arcade.Sprite;
   jumpButton: Phaser.GameObjects.Text;
   runButton: Phaser.GameObjects.Text;
+  scoreBoard: Phaser.GameObjects.Text;
   playerJumps = 0;
   nextPlatformDistance = 0;
   index: number;
+  score: number;
   constructor() {
     super({
       key: "GameNoFailScene"
@@ -50,7 +52,8 @@ export class GameNoFailScene extends Phaser.Scene {
   }
 
   create(data): void {
-    console.log(data);
+    this.score = 0;
+    this.updateScore();
     this.index = 0;
     if(data == "cookie"){
       gameOptions.chosenObject = "cookie";
@@ -93,7 +96,7 @@ export class GameNoFailScene extends Phaser.Scene {
     this.addPlatform(+this.game.config.width, +this.game.config.width / 2);
 
     // adding a chosenObject to the game
-    this.addchosenObject(100, (+this.game.config.width * 2) / 3);
+    this.addChosenObject(100, (+this.game.config.width * 2) / 3);
 
     // adding the player;
     this.player = this.physics.add.sprite(
@@ -112,8 +115,22 @@ export class GameNoFailScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platformGroup);
     // to do : disable input when scene isn't paused
     
-    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode) : this.scene.resume("GameNoFailScene"));
-    // document.addEventListener("keydown", e => e.keyCode == 13 ? this.index % 2 == 0 ? this.resumeGameAndJump() : this.resumeGameAndRun(): this.scene.pause("GameNoFailScene"));
+    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode): this.doNothing());
+  }
+
+  doNothing(){
+    
+  }
+
+  updateScore(){
+    var scoreBoardStyle = {
+      font: "128px Arial Bold",
+      boundsAlignH: "center",
+      boundsAlignV: "middle",
+      fill: "#99badd",
+      backgroundColor: "#fff"
+    };
+    this.scoreBoard = this.add.text(500, 0, "Score: "+this.score, scoreBoardStyle);
   }
 
   dealWithInput(key){
@@ -144,11 +161,14 @@ export class GameNoFailScene extends Phaser.Scene {
     }
     this.index++;
   }
+
   resumeGameAndJump() {
     this.scene.resume("GameNoFailScene");
     this.jump();
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
+    this.score++;
+    this.updateScore();
   }
 
   resumeGameAndRun() {
@@ -157,8 +177,8 @@ export class GameNoFailScene extends Phaser.Scene {
     this.runButton.setVisible(false);
   }
 
-  playerNearchosenObject(chosenObject: Phaser.Physics.Arcade.Sprite) {
-    return chosenObject.x - 200 > 0 && chosenObject.x - 200 < 2;
+  playerNearChosenObject(chosenObject: Phaser.Physics.Arcade.Sprite) {
+    return chosenObject.x - 200 > 0 && chosenObject.x - 200 < 3;
   }
 
   // the core of the script: platform are added from the pool or created on the fly
@@ -186,7 +206,7 @@ export class GameNoFailScene extends Phaser.Scene {
       gameOptions.spawnRange[1]
     );
   }
-  addchosenObject(chosenObjectSize: number, posX: number) {
+  addChosenObject(chosenObjectSize: number, posX: number) {
     let chosenObject: Phaser.Physics.Arcade.Sprite;
     if (this.chosenObjectPool.getLength()) {
       chosenObject = this.chosenObjectPool.getFirst();
@@ -233,7 +253,7 @@ export class GameNoFailScene extends Phaser.Scene {
           +this.game.config.width - chosenObject.x - chosenObject.displayWidth / 2;
         minDistance = Math.min(minDistance, chosenObjectDistance);
 
-        if (this.playerNearchosenObject(chosenObject)) {
+        if (this.playerNearChosenObject(chosenObject)) {
           this.jumpButton.setVisible(true);
           this.runButton.setVisible(true);
           this.scene.pause("GameNoFailScene");
@@ -242,12 +262,12 @@ export class GameNoFailScene extends Phaser.Scene {
 
     //adding new chosenObjects
     if (minDistance > this.nextPlatformDistance) {
-      var nextchosenObjectWidth = Phaser.Math.Between(
+      var nextChosenObjectWidth = Phaser.Math.Between(
         gameOptions.platformSizeRange[0],
         gameOptions.platformSizeRange[1]
       );
-      this.addchosenObject(
-        +nextchosenObjectWidth,
+      this.addChosenObject(
+        +nexthosenObjectWidth,
         +this.game.config.width + +this.game.config.width / 2
       );
 

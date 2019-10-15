@@ -10,7 +10,9 @@ let gameOptions = {
   jumpForce: 400,
   playerStartPosition: 200,
   jumps: 2,
-  chosenObject: null
+  chosenObject: null,
+  otherObject: null,
+  objects: ["cookie", "sports"]
 };
 
 type Platform = Phaser.Physics.Arcade.Sprite;
@@ -20,12 +22,16 @@ export class GameScene extends Phaser.Scene {
   platformPool: Phaser.GameObjects.Group;
   chosenObjectGroup: Phaser.GameObjects.Group;
   chosenObjectPool: Phaser.GameObjects.Group;
+  otherObjectGroup: Phaser.GameObjects.Group;
+  otherObjectPool: Phaser.GameObjects.Group;
   player: Phaser.Physics.Arcade.Sprite;
   jumpButton: Phaser.GameObjects.Text;
   runButton: Phaser.GameObjects.Text;
+  scoreBoard: Phaser.GameObjects.Text;
   playerJumps = 0;
   nextPlatformDistance = 0;
   index: number;
+  score: number;
   constructor() {
     super({
       key: "GameScene"
@@ -35,7 +41,6 @@ export class GameScene extends Phaser.Scene {
   // init(/*params: any*/): void { }
 
   preload(): void {
-    this.printSceneInfo();
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
     this.load.image("cookie", "assets/cookie.png");
@@ -50,13 +55,76 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(data): void {
-    console.log(data);
+    this.score = 0;
+    this.updateScore();
     this.index = 0;
-    if(data == "cookie"){
+    if (data == "cookie") {
       gameOptions.chosenObject = "cookie";
-    } else if(data == "sports"){
+    } else if (data == "sports") {
       gameOptions.chosenObject = "sports";
     }
+    gameOptions.otherObject = this.getRandomElement(gameOptions.chosenObject);
+
+    this.createButtons();
+
+    this.platformGroup = this.add.group({
+      removeCallback: platform => this.platformPool.add(platform)
+    });
+    this.platformPool = this.add.group({
+      removeCallback: platform => this.platformGroup.add(platform)
+    });
+    this.chosenObjectGroup = this.add.group({
+      removeCallback: chosenObject => this.chosenObjectGroup.add(chosenObject)
+    });
+    this.chosenObjectPool = this.add.group({
+      removeCallback: chosenObject => this.chosenObjectGroup.add(chosenObject)
+    });
+    this.otherObjectGroup = this.add.group({
+      removeCallback: otherObject => this.otherObjectGroup.add(otherObject)
+    });
+    this.otherObjectPool = this.add.group({
+      removeCallback: otherObject => this.otherObjectGroup.add(otherObject)
+    });
+    // adding a platform to the game, the arguments are platform width and x position
+    this.addPlatform(+this.game.config.width, +this.game.config.width / 2);
+
+    // adding a chosenObject or otherObject to the game at random
+    Math.random() > .5 ? this.addOtherObject(100, (+this.game.config.width * 2) / 3) : this.addChosenObject(100, (+this.game.config.width * 2) / 3);
+
+    // adding the player;
+    this.player = this.physics.add.sprite(
+      gameOptions.playerStartPosition,
+      +this.game.config.height / 2,
+      "player"
+    );
+    this.player.setGravityY(gameOptions.playerGravity);
+
+    // adding a chosenObject collider so chosenObject disappears upon collision with player
+    this.physics.add.collider(this.player, this.chosenObjectGroup, function (player, chosenObject) {
+      chosenObject.destroy();
+      this.score++;
+    });
+
+    this.physics.add.collider(this.player, this.otherObjectGroup, function (player, otherObject) {
+      otherObject.destroy();
+    });
+
+    // setting collisions between the player and the platform group
+    this.physics.add.collider(this.player, this.platformGroup);
+    // to do : disable input when scene isn't paused
+
+    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode) : this.doNothing);
+    // document.addEventListener("keydown", e => e.keyCode == 13 ? this.index % 2 == 0 ? this.resumeGameAndJump() : this.resumeGameAndRun(): this.scene.pause("GameScene"));
+  }
+  doNothing() {
+
+  }
+
+  getRandomElement(itemToExclude) {
+    let arr = gameOptions.objects.filter(o => o != itemToExclude);
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+  createButtons() {
     var selectedStyle = {
       font: "128px Arial Bold",
       boundsAlignH: "center",
@@ -76,66 +144,39 @@ export class GameScene extends Phaser.Scene {
 
     this.runButton = this.add.text(700, 350, "Run", style);
     this.runButton.setVisible(false);
-
-    this.platformGroup = this.add.group({
-      removeCallback: platform => this.platformPool.add(platform)
-    });
-    this.platformPool = this.add.group({
-      removeCallback: platform => this.platformGroup.add(platform)
-    });
-    this.chosenObjectGroup = this.add.group({
-      removeCallback: chosenObject => this.chosenObjectGroup.add(chosenObject)
-    });
-    this.chosenObjectPool = this.add.group({
-      removeCallback: chosenObject => this.chosenObjectGroup.add(chosenObject)
-    });
-    // adding a platform to the game, the arguments are platform width and x position
-    this.addPlatform(+this.game.config.width, +this.game.config.width / 2);
-
-    // adding a chosenObject to the game
-    this.addchosenObject(100, (+this.game.config.width * 2) / 3);
-
-    // adding the player;
-    this.player = this.physics.add.sprite(
-      gameOptions.playerStartPosition,
-      +this.game.config.height / 2,
-      "player"
-    );
-    this.player.setGravityY(gameOptions.playerGravity);
-    
-    // adding a chosenObject collider so chosenObject disappears upon collision with player
-    this.physics.add.collider(this.player, this.chosenObjectGroup, function (player, chosenObject) {
-      chosenObject.destroy();
-    });
-
-    // setting collisions between the player and the platform group
-    this.physics.add.collider(this.player, this.platformGroup);
-    // to do : disable input when scene isn't paused
-    
-    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode) : this.scene.resume("GameScene"));
-    // document.addEventListener("keydown", e => e.keyCode == 13 ? this.index % 2 == 0 ? this.resumeGameAndJump() : this.resumeGameAndRun(): this.scene.pause("GameScene"));
   }
 
-  dealWithInput(key){
+  updateScore() {
+    var scoreBoardStyle = {
+      font: "128px Arial Bold",
+      boundsAlignH: "center",
+      boundsAlignV: "middle",
+      fill: "#99badd",
+      backgroundColor: "#fff"
+    };
+    this.scoreBoard = this.add.text(500, 0, "Score: " + this.score, scoreBoardStyle);
+  }
+
+  dealWithInput(key) {
     this.printSceneInfo();
     console.log(this.index);
-    if(this.scene.isPaused("GameScene")){
-      if(key == 13){
+    if (this.scene.isPaused("GameScene")) {
+      if (key == 13) {
         //enter
-        if(this.index % 2 == 0){
+        if (this.index % 2 == 0) {
           this.resumeGameAndJump();
         } else {
           this.resumeGameAndRun();
         }
-      } else if(key == 32){
+      } else if (key == 32) {
         //space
         this.dealWithButtons();
       }
     }
   }
 
-  dealWithButtons(){
-    if(this.index % 2 == 1){
+  dealWithButtons() {
+    if (this.index % 2 == 1) {
       this.jumpButton.setBackgroundColor("#FFFF33");
       this.runButton.setBackgroundColor("#fff");
     } else {
@@ -149,6 +190,8 @@ export class GameScene extends Phaser.Scene {
     this.jump();
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
+   // this.score++;
+   // this.updateScore();
   }
 
   resumeGameAndRun() {
@@ -157,8 +200,8 @@ export class GameScene extends Phaser.Scene {
     this.runButton.setVisible(false);
   }
 
-  playerNearchosenObject(chosenObject: Phaser.Physics.Arcade.Sprite) {
-    return chosenObject.x - 200 > 0 && chosenObject.x - 200 < 2;
+  playerNearObject(object: Phaser.Physics.Arcade.Sprite) {
+    return object.x - 200 > 0 && object.x - 200 < 2;
   }
 
   // the core of the script: platform are added from the pool or created on the fly
@@ -186,7 +229,7 @@ export class GameScene extends Phaser.Scene {
       gameOptions.spawnRange[1]
     );
   }
-  addchosenObject(chosenObjectSize: number, posX: number) {
+  addChosenObject(chosenObjectSize: number, posX: number) {
     let chosenObject: Phaser.Physics.Arcade.Sprite;
     if (this.chosenObjectPool.getLength()) {
       chosenObject = this.chosenObjectPool.getFirst();
@@ -207,6 +250,30 @@ export class GameScene extends Phaser.Scene {
     chosenObject.displayWidth = chosenObjectSize;
     chosenObject.displayHeight = chosenObjectSize;
   }
+
+
+  addOtherObject(otherObjectSize: number, posX: number) {
+    let otherObject: Phaser.Physics.Arcade.Sprite;
+    if (this.otherObjectPool.getLength()) {
+      otherObject = this.otherObjectPool.getFirst();
+      otherObject.x = posX;
+      otherObject.active = true;
+      otherObject.visible = true;
+      this.otherObjectPool.remove(otherObject);
+    } else {
+      otherObject = this.physics.add.sprite(
+        posX,
+        +this.game.config.height / 2,
+        gameOptions.otherObject
+      );
+      otherObject.setImmovable(true);
+      otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
+      this.otherObjectGroup.add(otherObject);
+    }
+    otherObject.displayWidth = otherObjectSize;
+    otherObject.displayHeight = otherObjectSize;
+  }
+
   // // the player jumps when on the ground, or once in the air as long as there are jumps left 
   // and the first jump was on the ground
   jump() {
@@ -223,7 +290,6 @@ export class GameScene extends Phaser.Scene {
   }
   update() {
     this.player.x = gameOptions.playerStartPosition;
-
     // recycling chosenObjects
     let minDistance = +this.game.config.width;
     this.chosenObjectGroup
@@ -233,25 +299,56 @@ export class GameScene extends Phaser.Scene {
           +this.game.config.width - chosenObject.x - chosenObject.displayWidth / 2;
         minDistance = Math.min(minDistance, chosenObjectDistance);
 
-        if (this.playerNearchosenObject(chosenObject)) {
+        if (this.playerNearObject(chosenObject)) {
           this.jumpButton.setVisible(true);
           this.runButton.setVisible(true);
           this.scene.pause("GameScene");
         }
       }, this);
 
-    //adding new chosenObjects
-    if (minDistance > this.nextPlatformDistance) {
-      var nextchosenObjectWidth = Phaser.Math.Between(
-        gameOptions.platformSizeRange[0],
-        gameOptions.platformSizeRange[1]
-      );
-      this.addchosenObject(
-        +nextchosenObjectWidth,
-        +this.game.config.width + +this.game.config.width / 2
-      );
+    this.otherObjectGroup
+      .getChildren()
+      .forEach(function (otherObject: Phaser.Physics.Arcade.Sprite) {
+        let otherObjectDistance =
+          +this.game.config.width - otherObject.x - otherObject.displayWidth / 2;
+        minDistance = Math.min(minDistance, otherObjectDistance);
 
+        if (this.playerNearObject(otherObject)) {
+          this.jumpButton.setVisible(true);
+          this.runButton.setVisible(true);
+          this.scene.pause("GameScene");
+        }
+      }, this);
+
+    let chosen = Math.random() > .5;
+
+    if (chosen) {
+      //adding new chosenObjects
+      if (minDistance > this.nextPlatformDistance) {
+        var nextChosenObjectWidth = Phaser.Math.Between(
+          gameOptions.platformSizeRange[0],
+          gameOptions.platformSizeRange[1]
+        );
+        this.addChosenObject(
+          +nextChosenObjectWidth,
+          +this.game.config.width + +this.game.config.width / 2
+        );
+      }
+    } else {
+      //adding new otherObjects
+      if (minDistance > this.nextPlatformDistance) {
+        var nextOtherObjectWidth = Phaser.Math.Between(
+          gameOptions.platformSizeRange[0],
+          gameOptions.platformSizeRange[1]
+        );
+        this.addOtherObject(
+          +nextOtherObjectWidth,
+          +this.game.config.width + +this.game.config.width / 2
+        );
+      }
     }
+
+
     //adding a platform
     this.addPlatform(
       +this.game.config.width,
