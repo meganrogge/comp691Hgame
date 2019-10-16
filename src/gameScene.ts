@@ -103,6 +103,7 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.chosenObjectGroup, function (player, chosenObject) {
       chosenObject.destroy();
       this.score++;
+      this.updateScore();
     });
 
     this.physics.add.collider(this.player, this.otherObjectGroup, function (player, otherObject) {
@@ -113,11 +114,11 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platformGroup);
     // to do : disable input when scene isn't paused
 
-    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode) : this.doNothing);
-    // document.addEventListener("keydown", e => e.keyCode == 13 ? this.index % 2 == 0 ? this.resumeGameAndJump() : this.resumeGameAndRun(): this.scene.pause("GameScene"));
-  }
-  doNothing() {
-
+    document.addEventListener("keydown", e => {
+      if (e.key == "Space" || e.key == "Enter") {
+        this.dealWithInput(e.key)
+      }
+    });
   }
 
   getRandomElement(itemToExclude) {
@@ -161,14 +162,14 @@ export class GameScene extends Phaser.Scene {
     this.printSceneInfo();
     console.log(this.index);
     if (this.scene.isPaused("GameScene")) {
-      if (key == 13) {
+      if (key == "Enter") {
         //enter
         if (this.index % 2 == 0) {
           this.resumeGameAndJump();
         } else {
           this.resumeGameAndRun();
         }
-      } else if (key == 32) {
+      } else if (key == "Space") {
         //space
         this.dealWithButtons();
       }
@@ -190,8 +191,8 @@ export class GameScene extends Phaser.Scene {
     this.jump();
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
-   // this.score++;
-   // this.updateScore();
+    // this.score++;
+    // this.updateScore();
   }
 
   resumeGameAndRun() {

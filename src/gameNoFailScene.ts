@@ -55,30 +55,13 @@ export class GameNoFailScene extends Phaser.Scene {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    if(data == "cookie"){
+    if (data == "cookie") {
       gameOptions.chosenObject = "cookie";
-    } else if(data == "sports"){
+    } else if (data == "sports") {
       gameOptions.chosenObject = "sports";
     }
-    var selectedStyle = {
-      font: "128px Arial Bold",
-      boundsAlignH: "center",
-      boundsAlignV: "middle",
-      fill: "#99badd",
-      backgroundColor: "#FFFF33"
-    };
-    var style = {
-      font: "128px Arial Bold",
-      boundsAlignH: "center",
-      boundsAlignV: "middle",
-      fill: "#99badd",
-      backgroundColor: "#fff"
-    };
-    this.jumpButton = this.add.text(300, 350, "Jump", selectedStyle);
-    this.jumpButton.setVisible(false);
 
-    this.runButton = this.add.text(700, 350, "Run", style);
-    this.runButton.setVisible(false);
+    this.createButtons();
 
     this.platformGroup = this.add.group({
       removeCallback: platform => this.platformPool.add(platform)
@@ -105,7 +88,7 @@ export class GameNoFailScene extends Phaser.Scene {
       "player"
     );
     this.player.setGravityY(gameOptions.playerGravity);
-    
+
     // adding a chosenObject collider so chosenObject disappears upon collision with player
     this.physics.add.collider(this.player, this.chosenObjectGroup, function (player, chosenObject) {
       chosenObject.destroy();
@@ -114,15 +97,38 @@ export class GameNoFailScene extends Phaser.Scene {
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
     // to do : disable input when scene isn't paused
-    
-    document.addEventListener("keydown", e => e.keyCode == 32 || e.keyCode == 13 ? this.dealWithInput(e.keyCode): this.doNothing());
+
+    document.addEventListener("keydown", e => {
+      if (e.key == "Space" || e.key == "Enter") {
+        this.dealWithInput(e.key)
+      }
+    });
   }
 
-  doNothing(){
-    
+
+  createButtons() {
+    var selectedStyle = {
+      font: "128px Arial Bold",
+      boundsAlignH: "center",
+      boundsAlignV: "middle",
+      fill: "#99badd",
+      backgroundColor: "#FFFF33"
+    };
+    var style = {
+      font: "128px Arial Bold",
+      boundsAlignH: "center",
+      boundsAlignV: "middle",
+      fill: "#99badd",
+      backgroundColor: "#fff"
+    };
+    this.jumpButton = this.add.text(300, 350, "Jump", selectedStyle);
+    this.jumpButton.setVisible(false);
+
+    this.runButton = this.add.text(700, 350, "Run", style);
+    this.runButton.setVisible(false);
   }
 
-  updateScore(){
+  updateScore() {
     var scoreBoardStyle = {
       font: "128px Arial Bold",
       boundsAlignH: "center",
@@ -130,29 +136,29 @@ export class GameNoFailScene extends Phaser.Scene {
       fill: "#99badd",
       backgroundColor: "#fff"
     };
-    this.scoreBoard = this.add.text(500, 0, "Score: "+this.score, scoreBoardStyle);
+    this.scoreBoard = this.add.text(500, 0, "Score: " + this.score, scoreBoardStyle);
   }
 
-  dealWithInput(key){
+  dealWithInput(key) {
     this.printSceneInfo();
     console.log(this.index);
-    if(this.scene.isPaused("GameNoFailScene")){
-      if(key == 13){
+    if (this.scene.isPaused("GameNoFailScene")) {
+      if (key == "Enter") {
         //enter
-        if(this.index % 2 == 0){
+        if (this.index % 2 == 0) {
           this.resumeGameAndJump();
         } else {
           this.resumeGameAndRun();
         }
-      } else if(key == 32){
+      } else if (key == "Space") {
         //space
         this.dealWithButtons();
       }
     }
   }
 
-  dealWithButtons(){
-    if(this.index % 2 == 1){
+  dealWithButtons() {
+    if (this.index % 2 == 1) {
       this.jumpButton.setBackgroundColor("#FFFF33");
       this.runButton.setBackgroundColor("#fff");
     } else {
@@ -267,7 +273,7 @@ export class GameNoFailScene extends Phaser.Scene {
         gameOptions.platformSizeRange[1]
       );
       this.addChosenObject(
-        +nexthosenObjectWidth,
+        +nextChosenObjectWidth,
         +this.game.config.width + +this.game.config.width / 2
       );
 
