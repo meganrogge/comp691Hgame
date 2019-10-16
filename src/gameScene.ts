@@ -100,7 +100,7 @@ export class GameScene extends Phaser.Scene {
     this.player.setGravityY(gameOptions.playerGravity);
 
     // adding a chosenObject collider so chosenObject disappears upon collision with player
-    this.physics.add.collider(this.player, this.chosenObjectGroup, function (player, chosenObject) {
+    this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
       chosenObject.destroy();
       this.score++;
       this.updateScore();
