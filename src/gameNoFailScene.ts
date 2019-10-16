@@ -55,11 +55,8 @@ export class GameNoFailScene extends Phaser.Scene {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    if (data == "cookie") {
-      gameOptions.chosenObject = "cookie";
-    } else if (data == "sports") {
-      gameOptions.chosenObject = "sports";
-    }
+    
+    gameOptions.chosenObject = data;
 
     this.createButtons();
 
@@ -90,8 +87,10 @@ export class GameNoFailScene extends Phaser.Scene {
     this.player.setGravityY(gameOptions.playerGravity);
 
     // adding a chosenObject collider so chosenObject disappears upon collision with player
-    this.physics.add.collider(this.player, this.chosenObjectGroup, function (player, chosenObject) {
+    this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
       chosenObject.destroy();
+      this.score++;
+      this.updateScore();
     });
 
     // setting collisions between the player and the platform group
@@ -104,7 +103,6 @@ export class GameNoFailScene extends Phaser.Scene {
       }
     });
   }
-
 
   createButtons() {
     var selectedStyle = {
@@ -173,8 +171,6 @@ export class GameNoFailScene extends Phaser.Scene {
     this.jump();
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
-    this.score++;
-    this.updateScore();
   }
 
   resumeGameAndRun() {
