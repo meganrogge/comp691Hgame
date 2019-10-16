@@ -12,7 +12,8 @@ let gameOptions = {
   jumps: 2,
   chosenObject: null,
   otherObject: null,
-  objects: ["cookie", "sports"]
+  objects: ["cookie", "soccer", "tennis"],
+  map: {"desserts": ["cookie"], "sports": ["soccer", "tennis"]}
 };
 
 type Platform = Phaser.Physics.Arcade.Sprite;
@@ -44,7 +45,8 @@ export class GameScene extends Phaser.Scene {
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
     this.load.image("cookie", "assets/cookie.png");
-    this.load.image("sports", "assets/sports.png");
+    this.load.image("soccer", "assets/soccer.png");
+    this.load.image("tennis", "assets/tennis.png");
   }
 
   printSceneInfo() {
@@ -58,8 +60,16 @@ export class GameScene extends Phaser.Scene {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    gameOptions.chosenObject = data;
-    gameOptions.otherObject = this.getRandomElement(gameOptions.chosenObject);
+    
+
+    switch(data){
+      case "desserts":
+          gameOptions.chosenObject = gameOptions.map.desserts;
+          gameOptions.otherObject = this.getRandomElement(gameOptions.chosenObject);
+      case "sports":
+          gameOptions.chosenObject = gameOptions.map.sports;
+          gameOptions.otherObject = this.getRandomElement(gameOptions.chosenObject);
+    }
 
     this.createButtons();
 
@@ -102,7 +112,7 @@ export class GameScene extends Phaser.Scene {
       this.updateScore();
     });
 
-    this.physics.add.collider(this.player, this.otherObjectGroup, function (player, otherObject) {
+    this.physics.add.collider(this.player, this.otherObjectGroup,  (player, otherObject) => {
       otherObject.destroy();
     });
 
@@ -117,10 +127,11 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  getRandomElement(itemToExclude) {
-    let arr = gameOptions.objects.filter(o => o != itemToExclude);
+  getRandomElement(itemsToExclude) {
+    let arr = gameOptions.objects.filter(o => itemsToExclude.indexOf(o) == -1);
     return arr[Math.floor(Math.random() * arr.length)];
   }
+
   createButtons() {
     var selectedStyle = {
       font: "128px Arial Bold",
@@ -311,6 +322,7 @@ export class GameScene extends Phaser.Scene {
         minDistance = Math.min(minDistance, otherObjectDistance);
 
         if (this.playerNearObject(otherObject)) {
+          console.log(otherObject);
           this.jumpButton.setVisible(true);
           this.runButton.setVisible(true);
           this.scene.pause("GameScene");

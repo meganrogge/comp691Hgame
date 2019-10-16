@@ -41,7 +41,8 @@ export class GameNoFailScene extends Phaser.Scene {
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
     this.load.image("cookie", "assets/cookie.png");
-    this.load.image("sports", "assets/sports.png");
+    this.load.image("soccer", "assets/soccer.png");
+    this.load.image("tennis", "assets/tennis.png");
   }
 
   printSceneInfo() {

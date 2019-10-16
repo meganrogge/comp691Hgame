@@ -16,7 +16,7 @@ export class ObjectChoiceScene extends Phaser.Scene {
   }
   preload(): void {
     this.load.image("sports", "assets/sports.png");
-    this.load.image("cookie", "assets/cookie.png");
+    this.load.image("desserts", "assets/desserts.png");
   }
   create(): void {
     var style = {
@@ -26,7 +26,7 @@ export class ObjectChoiceScene extends Phaser.Scene {
       boundsAlignV: "middle",
       backgroundColor: "#FFFF33"
     };
-    this.cookie = this.physics.add.sprite(300, 200, "cookie");
+    this.cookie = this.physics.add.sprite(300, 200, "desserts");
     this.frame = this.add.text(this.cookie.x-50, this.cookie.y-50, "fdf", style);
     this.frame.setVisible(true);
     this.frame.setAlpha(.3);
@@ -37,7 +37,7 @@ export class ObjectChoiceScene extends Phaser.Scene {
    
 
     var hintText: string = "Press space to select your target object or press enter to choose gameplay type";
-    this.hint = this.add.text(150, 100, hintText, {
+    this.hint = this.add.text(150, 0, hintText, {
       font: "24px Arial Bold",
       fill: "#fff"
     });
@@ -62,7 +62,7 @@ export class ObjectChoiceScene extends Phaser.Scene {
       function(/*pointer*/) {
         if(index % 2 == 0){
           // sports selected
-          this.scene.start("GameplayChoiceScene", "cookie");
+          this.scene.start("GameplayChoiceScene", "desserts");
         } else {
           // cookie selected
           this.scene.start("GameplayChoiceScene", "sports");
