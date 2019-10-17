@@ -10,7 +10,8 @@ let gameOptions = {
   jumpForce: 400,
   playerStartPosition: 200,
   jumps: 2,
-  chosenObject: null
+  chosenObject: null,
+  map: {"desserts": ["cookie"], "sports": ["soccer", "tennis"]}
 };
 
 type Platform = Phaser.Physics.Arcade.Sprite;
@@ -56,8 +57,15 @@ export class GameNoFailScene extends Phaser.Scene {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    
-    gameOptions.chosenObject = data;
+    console.log(data);
+    switch(data){
+      case "desserts":
+          gameOptions.chosenObject = gameOptions.map.desserts;
+          break;
+      case "sports":
+          gameOptions.chosenObject = gameOptions.map.sports;
+          break;
+    }
 
     this.createButtons();
 
@@ -105,6 +113,10 @@ export class GameNoFailScene extends Phaser.Scene {
     });
   }
 
+  getRandomElement(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
   createButtons() {
     var selectedStyle = {
       font: "128px Arial Bold",
@@ -139,7 +151,6 @@ export class GameNoFailScene extends Phaser.Scene {
   }
 
   dealWithInput(key) {
-    this.printSceneInfo();
     console.log(this.index);
     if (this.scene.isPaused("GameNoFailScene")) {
       if (key == "Enter") {
@@ -221,7 +232,7 @@ export class GameNoFailScene extends Phaser.Scene {
       chosenObject = this.physics.add.sprite(
         posX,
         +this.game.config.height / 2,
-        gameOptions.chosenObject
+        this.getRandomElement(gameOptions.chosenObject)
       );
       chosenObject.setImmovable(true);
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);

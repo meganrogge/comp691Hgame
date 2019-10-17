@@ -10,8 +10,8 @@ let gameOptions = {
   jumpForce: 400,
   playerStartPosition: 200,
   jumps: 2,
-  chosenObject: null,
-  otherObject: null,
+  chosenObjects: null,
+  otherObjects: null,
   objects: ["cookie", "soccer", "tennis"],
   map: {"desserts": ["cookie"], "sports": ["soccer", "tennis"]}
 };
@@ -64,11 +64,13 @@ export class GameScene extends Phaser.Scene {
 
     switch(data){
       case "desserts":
-          gameOptions.chosenObject = gameOptions.map.desserts;
-          gameOptions.otherObject = this.getRandomElement(gameOptions.chosenObject);
+          gameOptions.chosenObjects = gameOptions.map.desserts;
+          gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
+          break;
       case "sports":
-          gameOptions.chosenObject = gameOptions.map.sports;
-          gameOptions.otherObject = this.getRandomElement(gameOptions.chosenObject);
+          gameOptions.chosenObjects = gameOptions.map.sports;
+          gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
+          break;
     }
 
     this.createButtons();
@@ -118,7 +120,6 @@ export class GameScene extends Phaser.Scene {
 
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
-    // to do : disable input when scene isn't paused
 
     document.addEventListener("keydown", e => {
       if (e.key == "Space" || e.key == "Enter") {
@@ -127,9 +128,8 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  getRandomElement(itemsToExclude) {
-    let arr = gameOptions.objects.filter(o => itemsToExclude.indexOf(o) == -1);
-    return arr[Math.floor(Math.random() * arr.length)];
+  getRandomElement(items) {
+    return items[Math.floor(Math.random() * items.length)];
   }
 
   createButtons() {
@@ -170,14 +170,12 @@ export class GameScene extends Phaser.Scene {
     console.log(this.index);
     if (this.scene.isPaused("GameScene")) {
       if (key == "Enter") {
-        //enter
         if (this.index % 2 == 0) {
           this.resumeGameAndJump();
         } else {
           this.resumeGameAndRun();
         }
       } else if (key == "Space") {
-        //space
         this.dealWithButtons();
       }
     }
@@ -198,8 +196,6 @@ export class GameScene extends Phaser.Scene {
     this.jump();
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
-    // this.score++;
-    // this.updateScore();
   }
 
   resumeGameAndRun() {
@@ -249,7 +245,7 @@ export class GameScene extends Phaser.Scene {
       chosenObject = this.physics.add.sprite(
         posX,
         +this.game.config.height / 2,
-        gameOptions.chosenObject
+        this.getRandomElement(gameOptions.chosenObjects)
       );
       chosenObject.setImmovable(true);
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
@@ -272,7 +268,7 @@ export class GameScene extends Phaser.Scene {
       otherObject = this.physics.add.sprite(
         posX,
         +this.game.config.height / 2,
-        gameOptions.otherObject
+        this.getRandomElement(gameOptions.otherObjects)
       );
       otherObject.setImmovable(true);
       otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
