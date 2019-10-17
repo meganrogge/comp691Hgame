@@ -122,7 +122,7 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platformGroup);
 
     document.addEventListener("keydown", e => {
-      if (e.key == "Space" || e.key == "Enter") {
+      if (e.keyCode == 32  || e.key == "Enter") {
         this.dealWithInput(e.key)
       }
     });
@@ -175,13 +175,14 @@ export class GameScene extends Phaser.Scene {
         } else {
           this.resumeGameAndRun();
         }
-      } else if (key == "Space") {
+      } else {
         this.dealWithButtons();
       }
     }
   }
 
   dealWithButtons() {
+    console.log("dealing with buttons "+this.index);
     if (this.index % 2 == 1) {
       this.jumpButton.setBackgroundColor("#FFFF33");
       this.runButton.setBackgroundColor("#fff");
