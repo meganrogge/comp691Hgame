@@ -11,7 +11,7 @@ let gameOptions = {
   playerStartPosition: 200,
   jumps: 2,
   chosenObject: null,
-  map: {"desserts": ["cookie"], "sports": ["soccer", "tennis"]}
+  map: {"desserts": ["cookie", "cupcake", "icecream", "pie", "cake"], "sports": ["soccer", "tennis", "baseball", "basketball", "football"], "cheerleading": ["pompom1",  "pompom2",  "pompom3", "pompom4", "pompom5", "pompom6"]}
 };
 
 type Platform = Phaser.Physics.Arcade.Sprite;
@@ -38,12 +38,24 @@ export class GameNoFailScene extends Phaser.Scene {
   // init(/*params: any*/): void { }
 
   preload(): void {
-    this.printSceneInfo();
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
     this.load.image("cookie", "assets/cookie.png");
+    this.load.image("cupcake", "assets/cupcake.png");
+    this.load.image("pie", "assets/pie.png");
+    this.load.image("cake", "assets/cake.png");
+    this.load.image("icecream", "assets/icecream.png");
     this.load.image("soccer", "assets/soccer.png");
     this.load.image("tennis", "assets/tennis.png");
+    this.load.image("baseball", "assets/baseball.png");
+    this.load.image("basketball", "assets/basketball.png");
+    this.load.image("football", "assets/football.png");
+    this.load.image("pompom1", "assets/pompom1.png");
+    this.load.image("pompom2", "assets/pompom2.png");
+    this.load.image("pompom3", "assets/pompom3.png");
+    this.load.image("pompom4", "assets/pompom4.png");
+    this.load.image("pompom5", "assets/pompom5.png");
+    this.load.image("pompom6", "assets/pompom6.png");
   }
 
   printSceneInfo() {
