@@ -65,6 +65,7 @@ export class GameplayChoiceScene extends Phaser.Scene {
         if(index % 2 == 0){
           // no fail game selected
           this.scene.start("GameNoFailScene", data);
+          console.log(data);
         } else {
           // choice game selected
           this.scene.start("GameScene", data);

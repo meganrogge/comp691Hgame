@@ -77,8 +77,10 @@ export class GameNoFailScene extends Phaser.Scene {
       case "sports":
           gameOptions.chosenObject = gameOptions.map.sports;
           break;
+      case "cheerleading":
+          gameOptions.chosenObject = gameOptions.map.cheerleading;   
     }
-
+    console.log(gameOptions.chosenObject);
     this.createButtons();
 
     this.platformGroup = this.add.group({

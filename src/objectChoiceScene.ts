@@ -5,7 +5,7 @@ export class ObjectChoiceScene extends Phaser.Scene {
   hint: Phaser.GameObjects.Text;
   noFailButton: Phaser.GameObjects.Text;
   choiceButton: Phaser.GameObjects.Text;
-  cookie: Phaser.Physics.Arcade.Sprite;
+  desserts: Phaser.Physics.Arcade.Sprite;
   sports: Phaser.Physics.Arcade.Sprite;
   cheerleading: Phaser.Physics.Arcade.Sprite;
   frame: Phaser.GameObjects.Text;
@@ -28,13 +28,12 @@ export class ObjectChoiceScene extends Phaser.Scene {
       boundsAlignV: "middle",
       backgroundColor: "#FFFF33"
     };
-    this.cookie = this.physics.add.sprite(300, 200, "desserts");
-    this.frame = this.add.text(this.cookie.x-50, this.cookie.y-50, "fdf", style);
+    this.desserts = this.physics.add.sprite(300, 200, "desserts");
+    this.frame = this.add.text(this.desserts.x-50, this.desserts.y-50, "fdf", style);
     this.frame.setVisible(true);
     this.frame.setAlpha(.3);
-    this.cookie.setVisible(true);
-
     this.sports = this.physics.add.sprite(600, 200, "sports");
+
    
     this.cheerleading = this.physics.add.sprite(900, 200, "cheerleading");
 
@@ -47,33 +46,31 @@ export class ObjectChoiceScene extends Phaser.Scene {
     this.input.keyboard.on(
       "keyup_SPACE",
       function(/*pointer*/) {
+        
         console.log(index % 3);
+        this.frame.destroy();
         if(index % 3 == 0){
-          this.frame.destroy();
-          this.frame = this.add.text(this.sports.x-50, this.sports.y-50, "fdf", style).setAlpha(.3);
+          this.frame = this.add.text(this.desserts.x-50, this.desserts.y-50, "fdf", style).setAlpha(.3);
+          console.log("desserts");
         } else if(index % 3 == 1){
-          this.frame.destroy();
-          this.frame = this.add.text(this.cookie.x-50, this.cookie.y-50, "fdf", style).setAlpha(.3);
+          this.frame = this.add.text(this.sports.x-50, this.sports.y-50, "fdf", style).setAlpha(.3);
+          console.log("sports");
         }  else if(index % 3 == 2){
-          this.frame.destroy();
           this.frame = this.add.text(this.cheerleading.x-50, this.cheerleading.y-50, "fdf", style).setAlpha(.3);
+          console.log("cheer");
         }
         index++;
       },
       this
     );
-//eventually will do index % choice list size
     this.input.keyboard.on(
       "keyup_ENTER",
       function(/*pointer*/) {
-        if(index % 3 == 0){
-          // sports selected
+        if(this.desserts.x - 50 == this.frame.x){
           this.scene.start("GameplayChoiceScene", "desserts");
-        } else if(index % 3 == 1) {
-          // cookie selected
+        } else if(this.sports.x - 50 == this.frame.x) {
           this.scene.start("GameplayChoiceScene", "sports");
-        } else  {
-          //cheerleading selected
+        } else if(this.cheerleading.x - 50 == this.frame.x) {
           this.scene.start("GameplayChoiceScene", "cheerleading");
         }
       },

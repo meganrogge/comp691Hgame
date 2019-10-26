@@ -1,5 +1,5 @@
 import "phaser";
-import { Input } from "phaser";
+import { SwitchBase } from "./base";
 
 // global game options
 let gameOptions = {
@@ -18,7 +18,7 @@ let gameOptions = {
 
 type Platform = Phaser.Physics.Arcade.Sprite;
 
-export class GameScene extends Phaser.Scene {
+export class GameScene extends SwitchBase {
   platformGroup: Phaser.GameObjects.Group;
   platformPool: Phaser.GameObjects.Group;
   chosenObjectGroup: Phaser.GameObjects.Group;
@@ -26,6 +26,7 @@ export class GameScene extends Phaser.Scene {
   otherObjectGroup: Phaser.GameObjects.Group;
   otherObjectPool: Phaser.GameObjects.Group;
   player: Phaser.Physics.Arcade.Sprite;
+  sprite: Phaser.GameObjects.Sprite;
   jumpButton: Phaser.GameObjects.Text;
   runButton: Phaser.GameObjects.Text;
   scoreBoard: Phaser.GameObjects.Text;
@@ -39,11 +40,10 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  // init(/*params: any*/): void { }
-
   preload(): void {
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
+    // this.load.spritesheet("sprite", 'assets/sprite_sheets/PlayerRun.png');
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
@@ -73,7 +73,8 @@ export class GameScene extends Phaser.Scene {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    
+    // this.sprite =this.add.sprite(15, 30, "sprite");
+    // this.sprite.frame;
 
     switch(data){
       case "desserts":
@@ -89,6 +90,8 @@ export class GameScene extends Phaser.Scene {
           gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
           break;
     }
+    console.log(data);
+    console.log(gameOptions.chosenObjects);
 
     this.createButtons();
 
@@ -140,6 +143,20 @@ export class GameScene extends Phaser.Scene {
 
     document.addEventListener("keydown", e => {
       if (e.keyCode == 32  || e.key == "Enter") {
+        let selected = <HTMLButtonElement>(
+          document.querySelector("button.selected")
+        );
+        if (selected) {
+          console.log("here");
+          selected.click();
+        } else {
+          let leftButton = <HTMLElement>(
+           document.querySelector("#left"));
+            if(leftButton){
+              leftButton.click();
+            }
+        }
+
         this.dealWithInput(e.key)
       }
     });
@@ -296,8 +313,6 @@ export class GameScene extends Phaser.Scene {
     otherObject.displayHeight = otherObjectSize;
   }
 
-  // // the player jumps when on the ground, or once in the air as long as there are jumps left 
-  // and the first jump was on the ground
   jump() {
     if (
       this.player.body.touching.down ||
