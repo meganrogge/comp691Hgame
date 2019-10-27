@@ -54,7 +54,7 @@ export class GameScene extends SwitchBase {
       frameWidth: 69,
       frameHeight: 90,
       startFrame: 0,
-      endFrame: 7
+      endFrame: 11
     });
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
@@ -91,11 +91,15 @@ export class GameScene extends SwitchBase {
       frames: this.anims.generateFrameNumbers('player', config),
       frameRate: 10,
       yoyo: true,
-      repeat: 30
+      repeat: -1
   };
 
   this.anims.create(config);
-  this.player = this.add.sprite(gameOptions.playerStartPosition, 550, "player");
+  this.player = this.physics.add.sprite(
+    gameOptions.playerStartPosition,
+    +this.game.config.height / 2,
+    "player"
+  );
 
   this.player.anims.load('walk');
   this.player.anims.play('walk');
@@ -142,14 +146,6 @@ export class GameScene extends SwitchBase {
 
     // adding a chosenObject or otherObject to the game at random
     Math.random() > .5 ? this.addOtherObject(100, (+this.game.config.width * 2) / 3) : this.addChosenObject(100, (+this.game.config.width * 2) / 3);
-
-    // adding the player;
-    this.player = this.physics.add.sprite(
-      gameOptions.playerStartPosition,
-      +this.game.config.height / 2,
-      "player"
-    );
-    this.player.setGravityY(gameOptions.playerGravity);
 
     // adding a chosenObject collider so chosenObject disappears upon collision with player
     this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
