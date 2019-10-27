@@ -99,7 +99,7 @@ export class GameScene extends SwitchBase {
 
   this.player.anims.load('walk');
   this.player.anims.play('walk');
-
+  
     switch(data){
       case "desserts":
           gameOptions.chosenObjects = gameOptions.map.desserts;
@@ -336,6 +336,11 @@ export class GameScene extends SwitchBase {
     }
   }
   update() {
+    if(!this.scene.isPaused("GameScene")){
+      this.player.setVisible(false);
+    } else {
+      this.player.setVisible(true);
+    }
     this.player.x = gameOptions.playerStartPosition;
     // recycling chosenObjects
     let minDistance = +this.game.config.width;
