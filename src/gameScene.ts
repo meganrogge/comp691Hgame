@@ -26,10 +26,11 @@ export class GameScene extends SwitchBase {
   otherObjectGroup: Phaser.GameObjects.Group;
   otherObjectPool: Phaser.GameObjects.Group;
   player: Phaser.Physics.Arcade.Sprite;
-  sprite: Phaser.GameObjects.Sprite;
   jumpButton: Phaser.GameObjects.Text;
   runButton: Phaser.GameObjects.Text;
   scoreBoard: Phaser.GameObjects.Text;
+  sprite: Phaser.GameObjects.Sprite;
+  playerAnim: Phaser.Animations.Animation;
   playerJumps = 0;
   nextPlatformDistance = 0;
   index: number;
@@ -42,8 +43,19 @@ export class GameScene extends SwitchBase {
 
   preload(): void {
     this.load.image("platform", "assets/platform.png");
-    this.load.image("player", "assets/player.png");
-    // this.load.spritesheet("sprite", 'assets/sprite_sheets/PlayerRun.png');
+    // this.load.image("player", "assets/player.png");
+    // this.load.spritesheet("sprite", 'assets/sprite_sheets/PlayerRun.png',{
+    //   frameWidth: 45,
+    //   frameHeight: 44,
+    //   startFrame: 0,
+    //   endFrame: 28
+    // });
+    this.load.spritesheet("player", 'assets/sprite_sheets/girl-spritesheet.png',{
+      frameWidth: 69,
+      frameHeight: 90,
+      startFrame: 0,
+      endFrame: 7
+    });
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
@@ -73,8 +85,20 @@ export class GameScene extends SwitchBase {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    // this.sprite =this.add.sprite(15, 30, "sprite");
-    // this.sprite.frame;
+    
+    var config = {
+      key: 'walk',
+      frames: this.anims.generateFrameNumbers('player', config),
+      frameRate: 10,
+      yoyo: true,
+      repeat: 30
+  };
+
+  this.anims.create(config);
+  this.player = this.add.sprite(gameOptions.playerStartPosition, 550, "player");
+
+  this.player.anims.load('walk');
+  this.player.anims.play('walk');
 
     switch(data){
       case "desserts":
@@ -143,20 +167,6 @@ export class GameScene extends SwitchBase {
 
     document.addEventListener("keydown", e => {
       if (e.keyCode == 32  || e.key == "Enter") {
-        let selected = <HTMLButtonElement>(
-          document.querySelector("button.selected")
-        );
-        if (selected) {
-          console.log("here");
-          selected.click();
-        } else {
-          let leftButton = <HTMLElement>(
-           document.querySelector("#left"));
-            if(leftButton){
-              leftButton.click();
-            }
-        }
-
         this.dealWithInput(e.key)
       }
     });
