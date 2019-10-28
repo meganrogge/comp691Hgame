@@ -5,7 +5,8 @@
   "main": "webpack.config.js",
   "scripts": {
     "build": "webpack",
-    "start": "webpack --watch & live-server --port=8085"
+    "start": "webpack --watch & live-server --port=8085",
+    "pages": "git checkout gh-pages; git merge --no-commit master; npm run build; git add dist/app.js; git commit -m 'update pages'; git push origin gh-pages; git checkout master"
   },
   "author": "Megan Rogge after Gary Bishop after Mariya Davydova",
   "license": "MIT",
@@ -15,11 +16,11 @@
     "phaser": "^3.19.0",
     "ts-loader": "^5.3.0",
     "typescript": "^3.1.6",
+    "typescript-compiler": "^1.4.1-2",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "jquery": "^3.4.1",
-    "typescript-compiler": "^1.4.1-2"
+    "jquery": "^3.4.1"
   }
 }
