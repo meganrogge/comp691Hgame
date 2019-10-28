@@ -100,7 +100,8 @@ export class GameScene extends SwitchBase {
     +this.game.config.height / 2,
     "player"
   );
-
+ 
+  this.player.setGravityY(gameOptions.playerGravity);
   this.player.anims.load('walk');
   this.player.anims.play('walk');
 
