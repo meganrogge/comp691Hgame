@@ -29,7 +29,6 @@ export class GameScene extends SwitchBase {
   jumpButton: Phaser.GameObjects.Text;
   runButton: Phaser.GameObjects.Text;
   scoreBoard: Phaser.GameObjects.Text;
-  sprite: Phaser.GameObjects.Sprite;
   playerAnim: Phaser.Animations.Animation;
   playerJumps = 0;
   nextPlatformDistance = 0;
@@ -43,7 +42,6 @@ export class GameScene extends SwitchBase {
 
   preload(): void {
     this.load.image("platform", "assets/platform.png");
-   
     this.load.spritesheet("player", 'assets/sprite_sheets/girl-spritesheet.png',{
       frameWidth: 69,
       frameHeight: 90,

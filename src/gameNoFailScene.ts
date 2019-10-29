@@ -25,6 +25,7 @@ export class GameNoFailScene extends Phaser.Scene {
   jumpButton: Phaser.GameObjects.Text;
   runButton: Phaser.GameObjects.Text;
   scoreBoard: Phaser.GameObjects.Text;
+  playerAnim: Phaser.Animations.Animation;
   playerJumps = 0;
   nextPlatformDistance = 0;
   index: number;
@@ -39,7 +40,12 @@ export class GameNoFailScene extends Phaser.Scene {
 
   preload(): void {
     this.load.image("platform", "assets/platform.png");
-    this.load.image("player", "assets/player.png");
+    this.load.spritesheet("player", 'assets/sprite_sheets/girl-spritesheet.png',{
+      frameWidth: 69,
+      frameHeight: 90,
+      startFrame: 0,
+      endFrame: 11
+    });
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
@@ -102,12 +108,24 @@ export class GameNoFailScene extends Phaser.Scene {
     this.addChosenObject(100, (+this.game.config.width * 2) / 3);
 
     // adding the player;
-    this.player = this.physics.add.sprite(
-      gameOptions.playerStartPosition,
-      +this.game.config.height / 2,
-      "player"
-    );
-    this.player.setGravityY(gameOptions.playerGravity);
+    var config = {
+      key: 'walk',
+      frames: this.anims.generateFrameNumbers('player', config),
+      frameRate: 10,
+      yoyo: true,
+      repeat: -1
+  };
+
+  this.anims.create(config);
+  this.player = this.physics.add.sprite(
+    gameOptions.playerStartPosition,
+    +this.game.config.height / 2,
+    "player"
+  );
+ 
+  this.player.setGravityY(gameOptions.playerGravity);
+  this.player.anims.load('walk');
+  this.player.anims.play('walk');
 
     // adding a chosenObject collider so chosenObject disappears upon collision with player
     this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
@@ -121,11 +139,20 @@ export class GameNoFailScene extends Phaser.Scene {
     // to do : disable input when scene isn't paused
 
     document.addEventListener("keydown", e => {
-      if (e.keyCode == 32  || e.key == "Enter") {
-        console.log(e.key);
-        this.dealWithInput(e.key)
+      if (e.key == " "  || e.key == "Enter" || e.key == "ArrowLeft" || e.key == "ArrowRight") {
+        if(e.key == "Enter" || e.key == "ArrowRight"){
+          this.dealWithInput("ArrowRight")
+        } else {
+          this.dealWithInput("ArrowLeft");
+        }
       }
     });
+    document
+      .getElementById("left")
+      .addEventListener("click", e => this.dealWithInput("ArrowLeft"));
+    document
+      .getElementById("right")
+      .addEventListener("click", e => this.dealWithInput("ArrowRight"));
   }
 
   getRandomElement(items) {
@@ -166,17 +193,16 @@ export class GameNoFailScene extends Phaser.Scene {
   }
 
   dealWithInput(key) {
+    this.printSceneInfo();
     console.log(this.index);
     if (this.scene.isPaused("GameNoFailScene")) {
-      if (key == "Enter") {
-        //enter
+      if (key == "ArrowRight") {
         if (this.index % 2 == 0) {
           this.resumeGameAndJump();
         } else {
           this.resumeGameAndRun();
         }
       } else {
-        //space
         this.dealWithButtons();
       }
     }
