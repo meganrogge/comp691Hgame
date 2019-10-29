@@ -43,13 +43,7 @@ export class GameScene extends SwitchBase {
 
   preload(): void {
     this.load.image("platform", "assets/platform.png");
-    // this.load.image("player", "assets/player.png");
-    // this.load.spritesheet("sprite", 'assets/sprite_sheets/PlayerRun.png',{
-    //   frameWidth: 45,
-    //   frameHeight: 44,
-    //   startFrame: 0,
-    //   endFrame: 28
-    // });
+   
     this.load.spritesheet("player", 'assets/sprite_sheets/girl-spritesheet.png',{
       frameWidth: 69,
       frameHeight: 90,
@@ -162,17 +156,20 @@ export class GameScene extends SwitchBase {
     this.physics.add.collider(this.player, this.platformGroup);
 
     document.addEventListener("keydown", e => {
-      if (e.key == " "  || e.key == "Enter") {
-        console.log(e.key);
-        this.dealWithInput(e.key)
+      if (e.key == " "  || e.key == "Enter" || e.key == "ArrowLeft" || e.key == "ArrowRight") {
+        if(e.key == "Enter" || e.key == "ArrowRight"){
+          this.dealWithInput("ArrowRight")
+        } else {
+          this.dealWithInput("ArrowLeft");
+        }
       }
     });
     document
       .getElementById("left")
-      .addEventListener("click", e => this.dealWithInput(" "));
+      .addEventListener("click", e => this.dealWithInput("ArrowLeft"));
     document
       .getElementById("right")
-      .addEventListener("click", e => this.dealWithInput("Enter"));
+      .addEventListener("click", e => this.dealWithInput("ArrowRight"));
   }
 
   getRandomElement(items) {
@@ -216,7 +213,7 @@ export class GameScene extends SwitchBase {
     this.printSceneInfo();
     console.log(this.index);
     if (this.scene.isPaused("GameScene")) {
-      if (key == "Enter") {
+      if (key == "ArrowRight") {
         if (this.index % 2 == 0) {
           this.resumeGameAndJump();
         } else {
