@@ -8,52 +8,42 @@ interface InputConfig {
 }
 
 export class SwitchBase extends Phaser.Scene {
-  public initialized: boolean = false;
-  public callback: (v: number) => void;
+  public waiting: boolean = false; // true when waiting for input
+  public callback: (v: number) => void; // call with their answer
+  public correct: number; // the correct answer for auto play
 
   constructor(args: any) {
     super(args);
   }
 
-  getUserInput(choices: string[], correct: number, func: (v: number) => void) {
-    if (!this.initialized) {
-      this.events.on("resume", (s: Phaser.Scene, d: { choice: number }) =>
-        this.userInput(d.choice)
-      );
-      /* There is a bug in run, now fixed but not yet released that makes
-       * it recreate instead of restarting a paused scene. I'll work around
-       * that by always resuming but I'll first need to run to get it started.
-       * I'll remove this when run gets released */
-      this.scene.run("ControlScene");
-      this.scene.pause("ControlScene");
-      this.initialized = true;
-    }
-    let inputConfig = { caller: this.scene.key, choices, correct };
-    this.scene.resume("ControlScene", inputConfig);
-    this.scene.pause();
+  getUserInput(correct: number, func: (v: number) => void) {
+    this.waiting = true;
+    this.correct = correct;
     this.callback = func;
-  }
-
-  userInput(choice: number) {
-    // this method will be called with the user's response
-    this.callback(choice);
-  }
-}
-
-export class ControlScene extends Phaser.Scene {
-  public inputConfig: InputConfig;
-  constructor() {
-    super({
-      key: "ControlScene"
-    });
+    if (settings.mode == "auto") {
+      this.time.delayedCall(
+        1000,
+        () => {
+          this.returnInput(this.correct);
+        },
+        [],
+        this
+      );
+    }
   }
 
   returnInput(value: number) {
-    if (settings.mode == "one") {
-      value = this.inputConfig.correct;
+    // ignore if not waiting
+    if (!this.waiting) {
+      return;
     }
-    this.scene.resume(this.inputConfig.caller, { choice: value });
-    this.scene.pause();
+    // display the choice
+    this.setSelected(value);
+    console.log(value);
+    // return the answer through the callback
+    this.callback(value);
+    // ignore input
+    this.waiting = false;
   }
 
   setSelected(choice: number) {
@@ -65,8 +55,8 @@ export class ControlScene extends Phaser.Scene {
     choices[choice].classList.add("selected");
   }
 
-  create(): void {
-    console.log("create control");
+  create(data): void {
+    // bind left and right arrow for direct selection
     this.input.keyboard.on("keydown-LEFT", (e: any) => {
       // pass response back to caller
       this.returnInput(0);
@@ -75,27 +65,14 @@ export class ControlScene extends Phaser.Scene {
       // pass response back to caller
       this.returnInput(1);
     });
-    this.events.on("resume", (e: Phaser.Scene, d: InputConfig) => {
-      this.inputConfig = d;
-      this.scene.pause(d.caller);
-      if (settings.mode == "auto") {
-        this.time.delayedCall(
-          1000,
-          () => {
-            this.setSelected(this.inputConfig.correct);
-            this.returnInput(this.inputConfig.correct);
-          },
-          [],
-          this
-        );
-      }
-    });
+    // bind the buttons for direct selection
     document
       .getElementById("left")
       .addEventListener("click", e => this.returnInput(0));
     document
       .getElementById("right")
       .addEventListener("click", e => this.returnInput(1));
+    // bind space for 2-switch mover
     this.input.keyboard.on("keydown-SPACE", (e: any) => {
       const choices = document.querySelectorAll("button.choice");
       let selected = document.querySelector("button.selected");
@@ -106,6 +83,7 @@ export class ControlScene extends Phaser.Scene {
       }
       choices[i].classList.add("selected");
     });
+    // bind enter for 2-switch chooser
     this.input.keyboard.on("keydown-ENTER", (e: any) => {
       const selected = <HTMLButtonElement>(
         document.querySelector("button.selected")

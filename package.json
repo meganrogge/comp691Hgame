@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack --watch & live-server --port=8085",
-    "pages": "git checkout gh-pages; git merge --no-commit master; npm run build; git add dist/app.js -f; git commit -m 'update pages'; git push origin gh-pages; git checkout master"
+    "pages": "git checkout gh-pages; git merge --no-commit master; npm run build; git add dist/app.js; git commit -m 'update pages'; git push origin gh-pages; git checkout master"
   },
   "author": "Megan Rogge after Gary Bishop after Mariya Davydova",
   "license": "MIT",
