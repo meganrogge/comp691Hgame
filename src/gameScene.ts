@@ -120,7 +120,6 @@ export class GameScene extends SwitchBase {
           break;
     }
     console.log(data);
-    console.log(gameOptions.chosenObjects);
 
     this.createButtons();
 
@@ -163,10 +162,17 @@ export class GameScene extends SwitchBase {
     this.physics.add.collider(this.player, this.platformGroup);
 
     document.addEventListener("keydown", e => {
-      if (e.keyCode == 32  || e.key == "Enter") {
+      if (e.key == " "  || e.key == "Enter") {
+        console.log(e.key);
         this.dealWithInput(e.key)
       }
     });
+    document
+      .getElementById("left")
+      .addEventListener("click", e => this.dealWithInput(" "));
+    document
+      .getElementById("right")
+      .addEventListener("click", e => this.dealWithInput("Enter"));
   }
 
   getRandomElement(items) {
