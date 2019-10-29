@@ -10,6 +10,7 @@
   "author": "Megan Rogge after Gary Bishop after Mariya Davydova",
   "license": "MIT",
   "devDependencies": {
+    "gh-pages": "^2.1.1",
     "gulp": "^4.0.2",
     "live-server": "^1.2.1",
     "phaser": "^3.19.0",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "jquery": "^3.4.1",
+    "pages": "0.0.16",
     "typescript-compiler": "^1.4.1-2"
   }
 }
