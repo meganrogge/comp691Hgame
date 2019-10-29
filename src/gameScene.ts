@@ -219,7 +219,7 @@ export class GameScene extends SwitchBase {
       if (key == "Enter") {
         if (this.index % 2 == 0) {
           this.resumeGameAndJump();
-        } else if(key == " "){
+        } else {
           this.resumeGameAndRun();
         }
       } else {
