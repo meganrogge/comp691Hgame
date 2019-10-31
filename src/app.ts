@@ -4,6 +4,7 @@ import { GameNoFailScene } from "./gameNoFailScene";
 import { ScoreScene } from "./scoreScene";
 import {GameplayChoiceScene } from "./gameplayChoiceScene";
 import {ObjectChoiceScene } from "./objectChoiceScene";
+import { ChoiceScene } from "./choiceScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   title: "Runner",
@@ -11,14 +12,13 @@ const config: Phaser.Types.Core.GameConfig = {
   width: 1334,
   height: 750,
   parent: "game",
-  scene: [ObjectChoiceScene, GameplayChoiceScene, GameNoFailScene, GameScene, ScoreScene],
+  scene: [ChoiceScene, GameScene, GameNoFailScene],
   physics: {
     default: "arcade",
     arcade: {
       debug: false
     }
-  },
-  backgroundColor: "#99badd" 
+  }
 };
 
 
