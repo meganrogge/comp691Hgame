@@ -5,7 +5,7 @@ export class GameplayChoiceScene extends Phaser.Scene {
   hint: Phaser.GameObjects.Text;
   noFailButton: Phaser.GameObjects.Text;
   choiceButton: Phaser.GameObjects.Text;
-
+  index: number;
   constructor() {
     super({
       key: "GameplayChoiceScene"
@@ -43,35 +43,55 @@ export class GameplayChoiceScene extends Phaser.Scene {
       font: "24px Arial Bold",
       fill: "#fff"
     });
-    let index = 0;
-    this.input.keyboard.on(
-      "keyup_SPACE",
-      function(/*pointer*/) {
-        if(index % 2 == 0){
-          this.noFailButton.setBackgroundColor("#fff");
-          this.choiceButton.setBackgroundColor("#FFFF33");
-        } else {
-          this.choiceButton.setBackgroundColor("#fff");
-          this.noFailButton.setBackgroundColor("#FFFF33");
-        }
-        index++;
-      },
-      this
-    );
+    this.index = 0;
 
-    this.input.keyboard.on(
-      "keyup_ENTER",
-      function(/*pointer*/) {
-        if(index % 2 == 0){
-          // no fail game selected
-          this.scene.start("GameNoFailScene", data);
-          console.log(data);
+    document.addEventListener("keydown", e => {
+      if (e.key == " "  || e.key == "Enter" || e.key == "ArrowLeft" || e.key == "ArrowRight") {
+        if(e.key == "Enter" || e.key == "ArrowRight"){
+          this.onEnter(data);
         } else {
-          // choice game selected
-          this.scene.start("GameScene", data);
+          this.onSpace();
         }
-      },
-      this
-    );
+      }
+    });
+
+    document
+      .getElementById("left")
+      .addEventListener("click", e => this.onSpace());
+    document
+      .getElementById("right")
+      .addEventListener("click", e => this.onEnter(data));
+  }
+
+  onEnter(data){
+    if(this.index % 2 == 0){
+      // no fail game selected
+      if(!this.scene.isActive("GameNoFailScene")){
+        this.scene.start("GameNoFailScene", data);
+      }
+      this.scene.stop("GameplayChoiceScene");
+      this.scene.stop("ObjectChoiceScene");
+      console.log(this.scene.manager.getScenes(true));
+    } else {
+      // choice game selected
+      if(!this.scene.isActive("GameScene")){
+       this.scene.start("GameScene", data); 
+      }
+      this.scene.stop("GameplayChoiceScene");
+      this.scene.stop("ObjectChoiceScene");
+      console.log(this.scene.manager.getScenes(true));  
+  }
+  }
+  
+  onSpace(){
+    console.log(this.index % 3);
+    if(this.index % 2 == 0){
+      this.noFailButton.setBackgroundColor("#fff");
+      this.choiceButton.setBackgroundColor("#FFFF33");
+    } else {
+      this.choiceButton.setBackgroundColor("#fff");
+      this.noFailButton.setBackgroundColor("#FFFF33");
+    }
+    this.index++;
   }
 }

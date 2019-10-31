@@ -12,8 +12,8 @@ let gameOptions = {
   jumps: 2,
   chosenObjects: null,
   otherObjects: null,
-  map: {"desserts": ["cookie", "cupcake", "icecream", "pie", "cake"], "sports": ["soccer", "tennis", "baseball", "basketball", "football"], "cheerleading": ["pompom1",  "pompom2",  "pompom3", "pompom4", "pompom5", "pompom6"]},
-  objects: ["cookie", "cupcake", "icecream", "pie", "cake", "soccer", "tennis", "baseball", "basketball", "football", "pompom1",  "pompom2",  "pompom3", "pompom4", "pompom5", "pompom6"]
+  map: { "desserts": ["cookie", "cupcake", "icecream", "pie", "cake"], "sports": ["soccer", "tennis", "baseball", "basketball", "football"], "cheerleading": ["pompom1", "pompom2", "pompom3", "pompom4", "pompom5", "pompom6"] },
+  objects: ["cookie", "cupcake", "icecream", "pie", "cake", "soccer", "tennis", "baseball", "basketball", "football", "pompom1", "pompom2", "pompom3", "pompom4", "pompom5", "pompom6"]
 };
 
 type Platform = Phaser.Physics.Arcade.Sprite;
@@ -42,7 +42,7 @@ export class GameScene extends SwitchBase {
 
   preload(): void {
     this.load.image("platform", "assets/platform.png");
-    this.load.spritesheet("player", 'assets/sprite_sheets/girl-spritesheet.png',{
+    this.load.spritesheet("player", 'assets/sprite_sheets/girl-spritesheet.png', {
       frameWidth: 69,
       frameHeight: 90,
       startFrame: 0,
@@ -77,39 +77,39 @@ export class GameScene extends SwitchBase {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    
+    this.cameras.main.setBackgroundColor(data.backgroundColor);
     var config = {
       key: 'walk',
-      frames: this.anims.generateFrameNumbers('player', config),
+      frames: this.anims.generateFrameNumbers(data.player, config),
       frameRate: 10,
       yoyo: true,
       repeat: -1
-  };
+    };
 
-  this.anims.create(config);
-  this.player = this.physics.add.sprite(
-    gameOptions.playerStartPosition,
-    +this.game.config.height / 2,
-    "player"
-  );
- 
-  this.player.setGravityY(gameOptions.playerGravity);
-  this.player.anims.load('walk');
-  this.player.anims.play('walk');
+    this.anims.create(config);
+    this.player = this.physics.add.sprite(
+      gameOptions.playerStartPosition,
+      +this.game.config.height / 2,
+      "player"
+    );
 
-    switch(data){
+    this.player.setGravityY(gameOptions.playerGravity);
+    this.player.anims.load('walk');
+    this.player.anims.play('walk');
+
+    switch (data.category) {
       case "desserts":
-          gameOptions.chosenObjects = gameOptions.map.desserts;
-          gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
-          break;
+        gameOptions.chosenObjects = gameOptions.map.desserts;
+        gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
+        break;
       case "sports":
-          gameOptions.chosenObjects = gameOptions.map.sports;
-          gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
-          break;
+        gameOptions.chosenObjects = gameOptions.map.sports;
+        gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
+        break;
       case "cheerleading":
-          gameOptions.chosenObjects = gameOptions.map.cheerleading;
-          gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
-          break;
+        gameOptions.chosenObjects = gameOptions.map.cheerleading;
+        gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
+        break;
     }
     console.log(data);
 
@@ -146,7 +146,7 @@ export class GameScene extends SwitchBase {
       this.updateScore();
     });
 
-    this.physics.add.collider(this.player, this.otherObjectGroup,  (player, otherObject) => {
+    this.physics.add.collider(this.player, this.otherObjectGroup, (player, otherObject) => {
       otherObject.destroy();
     });
 
@@ -154,12 +154,10 @@ export class GameScene extends SwitchBase {
     this.physics.add.collider(this.player, this.platformGroup);
 
     document.addEventListener("keydown", e => {
-      if (e.key == " "  || e.key == "Enter" || e.key == "ArrowLeft" || e.key == "ArrowRight") {
-        if(e.key == "Enter" || e.key == "ArrowRight"){
-          this.dealWithInput("ArrowRight")
-        } else {
-          this.dealWithInput("ArrowLeft");
-        }
+      if (e.key == " " || e.key == "ArrowLeft") {
+        this.dealWithInput("ArrowLeft")
+      } else if (e.key == "Enter" || e.key == "ArrowRight") {
+        this.dealWithInput("ArrowRight");
       }
     });
     document
@@ -224,7 +222,7 @@ export class GameScene extends SwitchBase {
   }
 
   dealWithButtons() {
-    console.log("dealing with buttons "+this.index);
+    console.log("dealing with buttons " + this.index);
     if (this.index % 2 == 1) {
       this.jumpButton.setBackgroundColor("#FFFF33");
       this.runButton.setBackgroundColor("#fff");
@@ -234,6 +232,7 @@ export class GameScene extends SwitchBase {
     }
     this.index++;
   }
+
   resumeGameAndJump() {
     this.scene.resume("GameScene");
     this.jump();

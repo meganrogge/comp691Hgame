@@ -75,8 +75,9 @@ export class GameNoFailScene extends Phaser.Scene {
     this.score = 0;
     this.updateScore();
     this.index = 0;
+    this.cameras.main.setBackgroundColor(data.backgroundColor);
     console.log(data);
-    switch(data){
+    switch(data.category){
       case "desserts":
           gameOptions.chosenObject = gameOptions.map.desserts;
           break;
@@ -110,7 +111,7 @@ export class GameNoFailScene extends Phaser.Scene {
     // adding the player;
     var config = {
       key: 'walk',
-      frames: this.anims.generateFrameNumbers('player', config),
+      frames: this.anims.generateFrameNumbers(data.player, config),
       frameRate: 10,
       yoyo: true,
       repeat: -1
