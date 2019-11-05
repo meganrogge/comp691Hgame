@@ -13,6 +13,7 @@ const config: Phaser.Types.Core.GameConfig = {
   height: 750,
   parent: "game",
   scene: [ChoiceScene, GameScene, GameNoFailScene],
+  transparent: false,
   physics: {
     default: "arcade",
     arcade: {

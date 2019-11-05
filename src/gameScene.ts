@@ -83,7 +83,7 @@ export class GameScene extends SwitchBase {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    this.cameras.main.setBackgroundColor(data.backgroundColor);
+    this.cameras.main.setBackgroundColor(data.background);
     var config = {
       key: 'walk',
       frames: this.anims.generateFrameNumbers(data.player, config),

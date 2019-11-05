@@ -81,7 +81,8 @@ export class GameNoFailScene extends Phaser.Scene {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    this.cameras.main.setBackgroundColor(data.backgroundColor);
+    
+    this.cameras.main.setBackgroundColor(data.background);
     console.log(data);
     switch(data.category){
       case "desserts":
