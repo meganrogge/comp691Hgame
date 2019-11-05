@@ -40,11 +40,17 @@ export class GameNoFailScene extends Phaser.Scene {
 
   preload(): void {
     this.load.image("platform", "assets/platform.png");
-    this.load.spritesheet("player", 'assets/sprite_sheets/girl-spritesheet.png',{
+    this.load.spritesheet("woman", 'assets/sprite_sheets/girl-spritesheet.png',{
       frameWidth: 69,
       frameHeight: 90,
       startFrame: 0,
       endFrame: 11
+    });
+    this.load.spritesheet("man", 'assets/sprite_sheets/man-spritesheet.png', {
+      frameWidth: 62,
+      frameHeight: 63,
+      startFrame: 0,
+      endFrame: 15
     });
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
@@ -121,7 +127,7 @@ export class GameNoFailScene extends Phaser.Scene {
   this.player = this.physics.add.sprite(
     gameOptions.playerStartPosition,
     +this.game.config.height / 2,
-    "player"
+    data.player
   );
  
   this.player.setGravityY(gameOptions.playerGravity);

@@ -44,6 +44,12 @@ export class ChoiceScene extends Phaser.Scene {
             startFrame: 0,
             endFrame: 11
         });
+        this.load.spritesheet("man", 'assets/sprite_sheets/man-spritesheet.png', {
+            frameWidth: 62,
+            frameHeight: 63,
+            startFrame: 0,
+            endFrame: 15
+        });
         this.load.image("sports", "assets/sports.png");
         this.load.image("desserts", "assets/desserts.png");
         this.load.image("cheerleading", "assets/cheerleading.jpg");
@@ -51,7 +57,7 @@ export class ChoiceScene extends Phaser.Scene {
 
     create(): void {
         this.states = ["ChoosingBackground", "ChoosingPlayer", "ChoosingCategory", "ChoosingMode", "Game"];
-        this.backgrounds = ["#33FFBD", "#FF5733", "#FFBD33"];
+        this.backgrounds = ["#ff5733","#ffbd33","#dbff33","#75ff33","#33ff57","#33ffbd"];
         this.players = ["woman", "man"];
         this.categories = ["sports", "desserts", "cheerleading"];
         this.gameModes = ["GameNoFailScene", "GameScene"];
