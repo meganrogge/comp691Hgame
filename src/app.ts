@@ -1,9 +1,7 @@
 import "phaser";
 import { GameScene } from "./gameScene";
+import { GameScene2 } from "./gameScene2";
 import { GameNoFailScene } from "./gameNoFailScene";
-import { ScoreScene } from "./scoreScene";
-import {GameplayChoiceScene } from "./gameplayChoiceScene";
-import {ObjectChoiceScene } from "./objectChoiceScene";
 import { ChoiceScene } from "./choiceScene";
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -12,7 +10,7 @@ const config: Phaser.Types.Core.GameConfig = {
   width: 1334,
   height: 750,
   parent: "game",
-  scene: [ChoiceScene, GameScene, GameNoFailScene],
+  scene: [ChoiceScene, GameScene, GameNoFailScene, GameScene2],
   transparent: false,
   physics: {
     default: "arcade",
