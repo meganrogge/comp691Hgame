@@ -1,7 +1,7 @@
 import "phaser";
+import { Tweens } from "phaser";
 
 export class ChoiceScene extends Phaser.Scene {
-
     currentState: string;
 
     currentBackground: string;
@@ -17,6 +17,9 @@ export class ChoiceScene extends Phaser.Scene {
     displayPlayer: Phaser.Physics.Arcade.Sprite;
     displayCategory: Phaser.Physics.Arcade.Sprite;
     displayMode: Phaser.GameObjects.Text;
+
+    playerTween: Tweens.Tween;
+    categoryTween: Tweens.Tween;
 
     backgroundIndex: number;
     playerIndex: number;
@@ -57,15 +60,15 @@ export class ChoiceScene extends Phaser.Scene {
 
     create(): void {
         this.states = ["ChoosingBackground", "ChoosingPlayer", "ChoosingCategory", "ChoosingMode", "Game"];
-        this.backgrounds = ["#ff5733","#ffbd33","#dbff33","#75ff33","#33ff57","#33ffbd"];
+        this.backgrounds = ["#ff5733", "#ffbd33", "#dbff33", "#75ff33", "#33ff57", "#33ffbd"];
         this.players = ["woman", "man"];
         this.categories = ["sports", "desserts", "cheerleading"];
-        this.gameModes = ["GameNoFailScene", "GameScene"];
+        this.gameModes = ["GameNoFailScene", "GameScene", "GameScene2"];
 
         this.backgroundIndex = 0;
-        this.playerIndex = 0;
-        this.categoryIndex = 0;
-        this.modeIndex = 0;
+        this.playerIndex = 1;
+        this.categoryIndex = 1;
+        this.modeIndex = 1;
 
         this.currentState = this.states[0];
         this.currentBackground = this.backgrounds[this.backgroundIndex];
@@ -84,7 +87,7 @@ export class ChoiceScene extends Phaser.Scene {
         document
             .getElementById("right")
             .addEventListener("click", e => this.onEnter());
-    }
+        }
 
     onEnter() {
         // go to next state, saving chosen value as current value
@@ -93,18 +96,36 @@ export class ChoiceScene extends Phaser.Scene {
                 this.chosenBackground = this.currentBackground;
                 console.log("set background");
                 this.currentState = "ChoosingPlayer";
+                this.playerTween = this.createTween(this.players[0], 500);
+                this.currentPlayer = this.players[0];
+                this.displayPlayer = this.physics.add.sprite(200, +this.game.config.height / 2, this.currentPlayer);
                 break;
             case "ChoosingPlayer":
                 this.chosenPlayer = this.currentPlayer;
+                this.displayPlayer.setVisible(true);
                 console.log("set player");
                 this.currentState = "ChoosingCategory";
+                this.categoryTween = this.createTween(this.categories[0], 500);
+                this.currentCategory = this.categories[0];
+                this.displayCategory = this.physics.add.sprite(300, 200, this.currentCategory);
                 break;
             case "ChoosingCategory":
                 this.chosenCategory = this.currentCategory;
+                this.displayCategory.setVisible(true);
                 console.log("set category");
                 this.currentState = "ChoosingMode";
+                this.currentMode = this.gameModes[0];
+                this.displayMode = this.add.text(300, 0, this.gameModes[0], {
+                    fontSize: '5000px',
+                    fontFamily: 'Arial',
+                    color: '#fff',
+                    fixedWidth: 1000,
+                    fixedHeight: 5000,
+                    align: 'right'
+                });
                 break;
             case "ChoosingMode":
+                this.displayMode.setVisible(true);
                 this.chosenMode = this.currentMode;
                 this.currentState = "Game";
                 console.log("set mode");
@@ -120,12 +141,16 @@ export class ChoiceScene extends Phaser.Scene {
                 console.log(this.currentBackground);
                 break;
             case "ChoosingPlayer":
+                this.tweens.remove(this.playerTween);
                 this.currentPlayer = this.getNextValue();
                 console.log(this.currentPlayer);
+                this.playerTween = this.createTween(this.currentPlayer, 500);
                 break;
             case "ChoosingCategory":
+                this.tweens.remove(this.categoryTween);
                 this.currentCategory = this.getNextValue();
                 console.log(this.currentCategory);
+                this.categoryTween = this.createTween(this.currentCategory, 500);
                 break;
             case "ChoosingMode":
                 this.currentMode = this.getNextValue();
@@ -142,18 +167,31 @@ export class ChoiceScene extends Phaser.Scene {
                 if (this.displayPlayer != null) {
                     this.displayPlayer.destroy(true);
                 }
-                this.displayPlayer = this.physics.add.sprite(200, +this.game.config.height / 2, this.currentPlayer);;
+                this.displayPlayer = this.physics.add.sprite(200, +this.game.config.height / 2, this.currentPlayer);
+                this.displayPlayer.setVisible(false);
             case "ChoosingCategory":
                 if (this.displayCategory != null) {
                     this.displayCategory.destroy(true);
                 }
                 this.displayCategory = this.physics.add.sprite(300, 200, this.currentCategory);
+                this.displayCategory.setVisible(false);
             case "ChoosingMode":
-                if (this.displayMode != null) {
-                    this.displayMode.destroy(true);
-                }
-                this.displayMode = this.add.text(600, 70, this.currentMode);
+                    if (this.displayMode != null) {
+                        this.displayMode.destroy(true);
+                    }
+                    this.displayMode = this.add.text(600, 70, this.currentMode);
         }
+    }
+
+    createTween(target, x) {
+        let image = this.add.image(x, 0, target);
+        let tween = this.tweens.add({
+            targets: image,
+            props: {
+                y: { value: 500, duration: 1000, ease: 'Bounce', yoyo: false }
+            }
+        });
+        return tween;
     }
 
     getNextValue() {
