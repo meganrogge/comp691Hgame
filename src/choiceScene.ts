@@ -18,8 +18,8 @@ export class ChoiceScene extends Phaser.Scene {
     displayCategory: Phaser.Physics.Arcade.Sprite;
     displayMode: Phaser.GameObjects.Text;
 
-    playerTween: Tweens.Tween;
-    categoryTween: Tweens.Tween;
+    playerImage: image;
+    categoryImage: image;
 
     backgroundIndex: number;
     playerIndex: number;
@@ -96,20 +96,22 @@ export class ChoiceScene extends Phaser.Scene {
                 this.chosenBackground = this.currentBackground;
                 console.log("set background");
                 this.currentState = "ChoosingPlayer";
-                this.playerTween = this.createTween(this.players[0], 500);
+                this.playerImage = this.createTween(this.players[0], 500);
                 this.currentPlayer = this.players[0];
                 this.displayPlayer = this.physics.add.sprite(200, +this.game.config.height / 2, this.currentPlayer);
                 break;
             case "ChoosingPlayer":
+                this.playerImage.destroy();
                 this.chosenPlayer = this.currentPlayer;
                 this.displayPlayer.setVisible(true);
                 console.log("set player");
                 this.currentState = "ChoosingCategory";
-                this.categoryTween = this.createTween(this.categories[0], 500);
+                this.categoryImage = this.createTween(this.categories[0], 500);
                 this.currentCategory = this.categories[0];
                 this.displayCategory = this.physics.add.sprite(300, 200, this.currentCategory);
                 break;
             case "ChoosingCategory":
+                this.categoryImage.destroy();
                 this.chosenCategory = this.currentCategory;
                 this.displayCategory.setVisible(true);
                 console.log("set category");
@@ -141,16 +143,16 @@ export class ChoiceScene extends Phaser.Scene {
                 console.log(this.currentBackground);
                 break;
             case "ChoosingPlayer":
-                this.tweens.remove(this.playerTween);
+                this.playerImage.destroy();
                 this.currentPlayer = this.getNextValue();
                 console.log(this.currentPlayer);
-                this.playerTween = this.createTween(this.currentPlayer, 500);
+                this.playerImage = this.createTween(this.currentPlayer, 500);
                 break;
             case "ChoosingCategory":
-                this.tweens.remove(this.categoryTween);
+                this.categoryImage.destroy();
                 this.currentCategory = this.getNextValue();
                 console.log(this.currentCategory);
-                this.categoryTween = this.createTween(this.currentCategory, 500);
+                this.categoryImage = this.createTween(this.currentCategory, 500);
                 break;
             case "ChoosingMode":
                 this.currentMode = this.getNextValue();
@@ -191,7 +193,7 @@ export class ChoiceScene extends Phaser.Scene {
                 y: { value: 500, duration: 1000, ease: 'Bounce', yoyo: false }
             }
         });
-        return tween;
+        return image;
     }
 
     getNextValue() {
