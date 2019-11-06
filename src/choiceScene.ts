@@ -18,8 +18,8 @@ export class ChoiceScene extends Phaser.Scene {
     displayCategory: Phaser.Physics.Arcade.Sprite;
     displayMode: Phaser.GameObjects.Text;
 
-    playerImage: image;
-    categoryImage: image;
+    playerImage: any;
+    categoryImage: any;
 
     backgroundIndex: number;
     playerIndex: number;
@@ -111,6 +111,7 @@ export class ChoiceScene extends Phaser.Scene {
                 this.displayCategory = this.physics.add.sprite(300, 200, this.currentCategory);
                 break;
             case "ChoosingCategory":
+                this.playerImage.destroy();
                 this.categoryImage.destroy();
                 this.chosenCategory = this.currentCategory;
                 this.displayCategory.setVisible(true);
@@ -127,6 +128,7 @@ export class ChoiceScene extends Phaser.Scene {
                 });
                 break;
             case "ChoosingMode":
+                this.categoryImage.destroy();
                 this.displayMode.setVisible(true);
                 this.chosenMode = this.currentMode;
                 this.currentState = "Game";
