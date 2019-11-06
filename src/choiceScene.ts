@@ -18,8 +18,8 @@ export class ChoiceScene extends Phaser.Scene {
     displayCategory: Phaser.Physics.Arcade.Sprite;
     displayMode: Phaser.GameObjects.Text;
 
-    playerImage: image;
-    categoryImage: image;
+    playerImage: any;
+    categoryImage: any;
 
     backgroundIndex: number;
     playerIndex: number;
