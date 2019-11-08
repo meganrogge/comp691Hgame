@@ -248,8 +248,8 @@ export class GameScene2 extends SwitchBase {
   }
 
   resumeGameAndJump() {
-    this.scene.resume("GameScene2");
     this.jump();
+    this.scene.resume("GameScene2");
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
   }
@@ -357,16 +357,12 @@ export class GameScene2 extends SwitchBase {
 
   jump() {
       this.tweens.add({
-      targets: this.targetObject,
-      y: this.targetObject.y,
-      onUpdate: (tween, target) => {
-        this.player.setVelocityY(gameOptions.jumpForce * -1*2);
-        this.player.setVelocityX(gameOptions.jumpForce*4);
+      targets: this.player,
+      props: {
+        y: {value: this.targetObject.y, duration: 2000},
+        x: {value: this.targetObject.x, duration: 2000},
       },
-      onComplete: () => {
-        
-      },
-      duration: 10
+      duration: 1000
     });
 }
 
