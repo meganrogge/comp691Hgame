@@ -248,8 +248,8 @@ export class GameScene2 extends SwitchBase {
   }
 
   resumeGameAndJump() {
-    this.scene.resume("GameScene2");
     this.jump();
+    this.scene.resume("GameScene2");
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
   }
@@ -306,9 +306,16 @@ export class GameScene2 extends SwitchBase {
       let o = this.getRandomElement(gameOptions.chosenObjects);
       chosenObject = this.physics.add.sprite(
         posX,
-        +this.game.config.height / 2,
+        +this.game.config.height-200,
         o
       );
+      this.tweens.add({
+        targets: chosenObject,
+        props: {
+            y: { value: 0, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
+            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
+        }
+      });
       chosenObject.setImmovable(true);
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.chosenObjectGroup.add(chosenObject);
@@ -330,9 +337,16 @@ export class GameScene2 extends SwitchBase {
       let o = this.getRandomElement(gameOptions.otherObjects);
       otherObject = this.physics.add.sprite(
         posX,
-        +this.game.config.height / 2,
+        +this.game.config.height-200,
         o
       );
+      this.tweens.add({
+        targets: otherObject,
+        props: {
+            y: { value: 0, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
+            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
+        }
+    });
       otherObject.setVelocityY(Math.random());
       otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.otherObjectGroup.add(otherObject);
@@ -343,16 +357,12 @@ export class GameScene2 extends SwitchBase {
 
   jump() {
       this.tweens.add({
-      targets: this.targetObject,
-      y: this.targetObject.y,
-      onUpdate: (tween, target) => {
-        this.player.setVelocityY(gameOptions.jumpForce * -1*2);
-        this.player.setVelocityX(gameOptions.jumpForce*4);
+      targets: this.player,
+      props: {
+        y: {value: this.targetObject.y, duration: 2000},
+        x: {value: this.targetObject.x, duration: 2000},
       },
-      onComplete: () => {
-        
-      },
-      duration: 10
+      duration: 1000
     });
 }
 

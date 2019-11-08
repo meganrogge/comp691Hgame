@@ -97,7 +97,7 @@ export class GameScene extends SwitchBase {
       yoyo: true,
       repeat: -1
     };
-
+    
     this.anims.create(config);
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,
