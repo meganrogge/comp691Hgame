@@ -57,6 +57,18 @@ export class GameNoFailScene extends Phaser.Scene {
       startFrame: 0,
       endFrame: 3
   });
+  this.load.spritesheet("luigi", 'assets/sprite_sheets/luigi-spritesheet.png', {
+    frameWidth: 31,
+    frameHeight: 46,
+    startFrame: 0,
+    endFrame: 3
+});
+  this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
+    frameWidth: 36,
+    frameHeight: 46,
+    startFrame: 0,
+    endFrame: 7
+});
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");

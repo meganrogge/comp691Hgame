@@ -59,6 +59,18 @@ export class ChoiceScene extends Phaser.Scene {
             startFrame: 0,
             endFrame: 3
         });
+        this.load.spritesheet("luigi", 'assets/sprite_sheets/luigi-spritesheet.png', {
+            frameWidth: 31,
+            frameHeight: 46,
+            startFrame: 0,
+            endFrame: 3
+        });
+        this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
+            frameWidth: 36,
+            frameHeight: 46,
+            startFrame: 0,
+            endFrame: 7
+        });
         this.load.image("background-moving", "assets/parallax-mountain.psd");
         this.load.image("sports", "assets/sports.png");
         this.load.image("desserts", "assets/desserts.png");
@@ -69,7 +81,7 @@ export class ChoiceScene extends Phaser.Scene {
         // this.add.image(0,0,"background-moving");
         this.states = ["ChoosingBackground", "ChoosingPlayer", "ChoosingCategory", "ChoosingMode", "Game"];
         this.backgrounds = ["#ff5733", "#ffbd33", "#dbff33", "#75ff33", "#33ff57", "#33ffbd"];
-        this.players = ["woman", "man", "girl"];
+        this.players = ["woman", "man", "girl", "luigi", "mario"];
         this.categories = ["sports", "desserts", "cheerleading"];
         this.gameModes = ["GameNoFailScene", "GameScene", "GameScene2"];
 

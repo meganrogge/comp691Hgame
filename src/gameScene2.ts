@@ -61,6 +61,12 @@ export class GameScene2 extends SwitchBase {
       startFrame: 0,
       endFrame: 3
   });
+  this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
+    frameWidth: 36,
+    frameHeight: 46,
+    startFrame: 0,
+    endFrame: 7
+});
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
