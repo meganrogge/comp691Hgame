@@ -41,7 +41,7 @@ export class ChoiceScene extends Phaser.Scene {
 
     preload(): void {
         this.load.image("platform", "assets/platform.png");
-        this.load.spritesheet("woman", 'assets/sprite_sheets/girl-spritesheet.png', {
+        this.load.spritesheet("woman", 'assets/sprite_sheets/woman-spritesheet.png', {
             frameWidth: 69,
             frameHeight: 90,
             startFrame: 0,
@@ -53,6 +53,12 @@ export class ChoiceScene extends Phaser.Scene {
             startFrame: 0,
             endFrame: 15
         });
+        this.load.spritesheet("girl", 'assets/sprite_sheets/girl-spritesheet.png', {
+            frameWidth: 130,
+            frameHeight: 130,
+            startFrame: 0,
+            endFrame: 3
+        });
         this.load.image("background-moving", "assets/parallax-mountain.psd");
         this.load.image("sports", "assets/sports.png");
         this.load.image("desserts", "assets/desserts.png");
@@ -63,7 +69,7 @@ export class ChoiceScene extends Phaser.Scene {
         // this.add.image(0,0,"background-moving");
         this.states = ["ChoosingBackground", "ChoosingPlayer", "ChoosingCategory", "ChoosingMode", "Game"];
         this.backgrounds = ["#ff5733", "#ffbd33", "#dbff33", "#75ff33", "#33ff57", "#33ffbd"];
-        this.players = ["woman", "man"];
+        this.players = ["woman", "man", "girl"];
         this.categories = ["sports", "desserts", "cheerleading"];
         this.gameModes = ["GameNoFailScene", "GameScene", "GameScene2"];
 

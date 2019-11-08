@@ -43,7 +43,7 @@ export class GameScene2 extends SwitchBase {
 
   preload(): void {
     this.load.image("platform", "assets/platform.png");
-    this.load.spritesheet("woman", 'assets/sprite_sheets/girl-spritesheet.png', {
+    this.load.spritesheet("woman", 'assets/sprite_sheets/woman-spritesheet.png', {
       frameWidth: 69,
       frameHeight: 90,
       startFrame: 0,
@@ -55,6 +55,12 @@ export class GameScene2 extends SwitchBase {
       startFrame: 0,
       endFrame: 15
     });
+    this.load.spritesheet("girl", 'assets/sprite_sheets/girl-spritesheet.png', {
+      frameWidth: 65,
+      frameHeight: 65,
+      startFrame: 0,
+      endFrame: 3
+  });
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
