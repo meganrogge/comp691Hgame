@@ -20,6 +20,7 @@ type Platform = Phaser.Physics.Arcade.Sprite;
 
 export class GameScene2 extends SwitchBase {
   platformGroup: Phaser.GameObjects.Group;
+  targetObject: Phaser.Physics.Arcade.Sprite;
   platformPool: Phaser.GameObjects.Group;
   chosenObjectGroup: Phaser.GameObjects.Group;
   chosenObjectPool: Phaser.GameObjects.Group;
@@ -80,6 +81,7 @@ export class GameScene2 extends SwitchBase {
   }
 
   create(data): void {
+    
     this.score = 0;
     this.updateScore();
     this.index = 0;
@@ -253,7 +255,12 @@ export class GameScene2 extends SwitchBase {
   }
 
   playerNearObject(object: Phaser.Physics.Arcade.Sprite) {
-    return object.x - 200 > 0 && object.x - 200 < 2;
+    if(object.x - 600 > 0 && object.x - 600 < 2){
+      this.targetObject = object;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // the core of the script: platform are added from the pool or created on the fly
@@ -290,10 +297,11 @@ export class GameScene2 extends SwitchBase {
       chosenObject.visible = true;
       this.chosenObjectPool.remove(chosenObject);
     } else {
+      let o = this.getRandomElement(gameOptions.chosenObjects);
       chosenObject = this.physics.add.sprite(
         posX,
         +this.game.config.height / 2,
-        this.getRandomElement(gameOptions.chosenObjects)
+        o
       );
       chosenObject.setImmovable(true);
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
@@ -313,12 +321,13 @@ export class GameScene2 extends SwitchBase {
       otherObject.visible = true;
       this.otherObjectPool.remove(otherObject);
     } else {
+      let o = this.getRandomElement(gameOptions.otherObjects);
       otherObject = this.physics.add.sprite(
         posX,
         +this.game.config.height / 2,
-        this.getRandomElement(gameOptions.otherObjects)
+        o
       );
-      otherObject.setImmovable(true);
+      otherObject.setVelocityY(Math.random());
       otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.otherObjectGroup.add(otherObject);
     }
@@ -327,17 +336,19 @@ export class GameScene2 extends SwitchBase {
   }
 
   jump() {
-    if (
-      this.player.body.touching.down ||
-      (this.playerJumps > 0 && this.playerJumps < gameOptions.jumps)
-    ) {
-      if (this.player.body.touching.down) {
-        this.playerJumps = 2;
-      }
-      this.player.setVelocityY(gameOptions.jumpForce * -1 * 2);
-      this.playerJumps++;
-    }
-  }
+      this.tweens.add({
+      targets: this.targetObject,
+      y: this.targetObject.y,
+      onUpdate: (tween, target) => {
+        this.player.setVelocityY(gameOptions.jumpForce * -1*2);
+        this.player.setVelocityX(gameOptions.jumpForce*4);
+      },
+      onComplete: () => {
+        
+      },
+      duration: 10
+    });
+}
 
   update() {
     this.player.x = gameOptions.playerStartPosition;

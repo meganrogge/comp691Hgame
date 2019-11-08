@@ -53,12 +53,14 @@ export class ChoiceScene extends Phaser.Scene {
             startFrame: 0,
             endFrame: 15
         });
+        this.load.image("background-moving", "assets/parallax-mountain.psd");
         this.load.image("sports", "assets/sports.png");
         this.load.image("desserts", "assets/desserts.png");
         this.load.image("cheerleading", "assets/cheerleading.jpg");
     }
 
     create(): void {
+        // this.add.image(0,0,"background-moving");
         this.states = ["ChoosingBackground", "ChoosingPlayer", "ChoosingCategory", "ChoosingMode", "Game"];
         this.backgrounds = ["#ff5733", "#ffbd33", "#dbff33", "#75ff33", "#33ff57", "#33ffbd"];
         this.players = ["woman", "man"];
