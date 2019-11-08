@@ -306,9 +306,16 @@ export class GameScene2 extends SwitchBase {
       let o = this.getRandomElement(gameOptions.chosenObjects);
       chosenObject = this.physics.add.sprite(
         posX,
-        +this.game.config.height / 2,
+        +this.game.config.height-200,
         o
       );
+      this.tweens.add({
+        targets: chosenObject,
+        props: {
+            y: { value: 0, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
+            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
+        }
+      });
       chosenObject.setImmovable(true);
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.chosenObjectGroup.add(chosenObject);
@@ -330,9 +337,16 @@ export class GameScene2 extends SwitchBase {
       let o = this.getRandomElement(gameOptions.otherObjects);
       otherObject = this.physics.add.sprite(
         posX,
-        +this.game.config.height / 2,
+        +this.game.config.height-200,
         o
       );
+      this.tweens.add({
+        targets: otherObject,
+        props: {
+            y: { value: 0, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
+            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
+        }
+    });
       otherObject.setVelocityY(Math.random());
       otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.otherObjectGroup.add(otherObject);
