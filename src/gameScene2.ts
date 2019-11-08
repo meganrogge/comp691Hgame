@@ -102,7 +102,7 @@ export class GameScene2 extends SwitchBase {
       key: 'walk',
       frames: this.anims.generateFrameNumbers(data.player, config),
       frameRate: 10,
-      yoyo: true,
+      loop: true,
       repeat: -1
     };
 
@@ -322,7 +322,7 @@ export class GameScene2 extends SwitchBase {
             x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
         }
       });
-      chosenObject.setImmovable(true);
+      // chosenObject.setImmovable(true);
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.chosenObjectGroup.add(chosenObject);
     }
@@ -353,7 +353,7 @@ export class GameScene2 extends SwitchBase {
             x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
         }
     });
-      otherObject.setVelocityY(Math.random());
+      // otherObject.setVelocityY(Math.random());
       otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.otherObjectGroup.add(otherObject);
     }
@@ -367,8 +367,7 @@ export class GameScene2 extends SwitchBase {
       props: {
         y: {value: this.targetObject.y, duration: 2000},
         x: {value: this.targetObject.x, duration: 2000},
-      },
-      duration: 1000
+      }
     });
 }
 

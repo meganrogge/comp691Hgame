@@ -106,7 +106,7 @@ export class GameScene extends SwitchBase {
       key: 'walk',
       frames: this.anims.generateFrameNumbers(data.player, config),
       frameRate: 10,
-      yoyo: true,
+      loop: true,
       repeat: -1
     };
     

@@ -137,7 +137,7 @@ export class GameNoFailScene extends Phaser.Scene {
       key: 'walk',
       frames: this.anims.generateFrameNumbers(data.player, config),
       frameRate: 10,
-      yoyo: true,
+      loop: true,
       repeat: -1
   };
 
