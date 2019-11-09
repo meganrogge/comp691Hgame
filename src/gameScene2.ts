@@ -161,12 +161,14 @@ export class GameScene2 extends SwitchBase {
 
     // adding a chosenObject collider so chosenObject disappears upon collision with player
     this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
+      this.player.x = 0;
       chosenObject.destroy();
       this.score++;
       this.updateScore();
     });
 
     this.physics.add.collider(this.player, this.otherObjectGroup, (player, otherObject) => {
+      this.player.x = 0;
       otherObject.destroy();
     });
 
@@ -255,6 +257,7 @@ export class GameScene2 extends SwitchBase {
 
   resumeGameAndJump() {
     this.jump();
+
     this.scene.resume("GameScene2");
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
@@ -319,7 +322,7 @@ export class GameScene2 extends SwitchBase {
         targets: chosenObject,
         props: {
             y: { value: 0, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
-            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
+            x: { value: 0, duration: 10000, ease: 'Linear', yoyo: false}
         }
       });
       // chosenObject.setImmovable(true);
@@ -365,14 +368,18 @@ export class GameScene2 extends SwitchBase {
       this.tweens.add({
       targets: this.player,
       props: {
-        y: {value: this.targetObject.y, duration: 2000},
-        x: {value: this.targetObject.x, duration: 2000},
-      }
+        y: {value: this.targetObject.y},
+        x: {value: this.targetObject.x}
+      },
+      duration: 200
     });
 }
 
   update() {
-    this.player.x = gameOptions.playerStartPosition;
+    if(this.player.x < gameOptions.playerStartPosition){
+      this.player.x = gameOptions.playerStartPosition;
+    }
+    
     // recycling chosenObjects
     let minDistance = +this.game.config.width;
     this.chosenObjectGroup
