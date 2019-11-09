@@ -67,6 +67,12 @@ export class GameScene2 extends SwitchBase {
     startFrame: 0,
     endFrame: 7
 });
+this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png', {
+  frameWidth: 250,
+  frameHeight: 301,
+  startFrame: 0,
+  endFrame: 8
+});
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
@@ -321,11 +327,11 @@ export class GameScene2 extends SwitchBase {
       this.tweens.add({
         targets: chosenObject,
         props: {
-            y: { value: 0, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
-            x: { value: 0, duration: 10000, ease: 'Linear', yoyo: false}
+            y: { value: 50, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
+            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
         }
+        
       });
-      // chosenObject.setImmovable(true);
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.chosenObjectGroup.add(chosenObject);
     }
@@ -352,11 +358,10 @@ export class GameScene2 extends SwitchBase {
       this.tweens.add({
         targets: otherObject,
         props: {
-            y: { value: 0, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
+            y: { value: 50, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
             x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
         }
     });
-      // otherObject.setVelocityY(Math.random());
       otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.otherObjectGroup.add(otherObject);
     }
@@ -371,8 +376,11 @@ export class GameScene2 extends SwitchBase {
         y: {value: this.targetObject.y},
         x: {value: this.targetObject.x}
       },
-      duration: 200
-    });
+    onComplete: () => {
+      this.targetObject.setVisible(false);
+    },
+    duration: 200
+  });
 }
 
   update() {

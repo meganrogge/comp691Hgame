@@ -72,6 +72,12 @@ export class GameScene extends SwitchBase {
     startFrame: 0,
     endFrame: 7
 });
+this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png', {
+  frameWidth: 250,
+  frameHeight: 301,
+  startFrame: 0,
+  endFrame: 8
+});
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
