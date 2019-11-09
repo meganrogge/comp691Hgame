@@ -77,7 +77,6 @@ export class ChoiceScene extends Phaser.Scene {
             startFrame: 0,
             endFrame: 8
         });
-        this.load.image("background-moving", "assets/parallax-mountain.psd");
         this.load.image("sports", "assets/sports.png");
         this.load.image("desserts", "assets/desserts.png");
         this.load.image("cheerleading", "assets/cheerleading.jpg");
@@ -113,7 +112,7 @@ export class ChoiceScene extends Phaser.Scene {
         document
             .getElementById("right")
             .addEventListener("click", e => this.onEnter());
-        }
+    }
 
     onEnter() {
         // go to next state, saving chosen value as current value
@@ -145,11 +144,9 @@ export class ChoiceScene extends Phaser.Scene {
                 this.currentState = "ChoosingMode";
                 this.currentMode = this.gameModes[0];
                 this.displayMode = this.add.text(300, 0, this.gameModes[0], {
-                    fontSize: '5000px',
+                    fontSize: '50px',
                     fontFamily: 'Arial',
                     color: '#fff',
-                    fixedWidth: 1000,
-                    fixedHeight: 5000,
                     align: 'right'
                 });
                 break;
@@ -206,10 +203,10 @@ export class ChoiceScene extends Phaser.Scene {
                 this.displayCategory = this.physics.add.sprite(300, 200, this.currentCategory);
                 this.displayCategory.setVisible(false);
             case "ChoosingMode":
-                    if (this.displayMode != null) {
-                        this.displayMode.destroy(true);
-                    }
-                    this.displayMode = this.add.text(600, 70, this.currentMode);
+                if (this.displayMode != null) {
+                    this.displayMode.destroy(true);
+                }
+                this.displayMode = this.add.text(600, 70, this.currentMode);
         }
     }
 
