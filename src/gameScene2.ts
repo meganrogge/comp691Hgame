@@ -61,6 +61,12 @@ export class GameScene2 extends SwitchBase {
       startFrame: 0,
       endFrame: 3
   });
+  this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
+    frameWidth: 36,
+    frameHeight: 46,
+    startFrame: 0,
+    endFrame: 7
+});
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
@@ -96,7 +102,7 @@ export class GameScene2 extends SwitchBase {
       key: 'walk',
       frames: this.anims.generateFrameNumbers(data.player, config),
       frameRate: 10,
-      yoyo: true,
+      loop: true,
       repeat: -1
     };
 
@@ -155,12 +161,14 @@ export class GameScene2 extends SwitchBase {
 
     // adding a chosenObject collider so chosenObject disappears upon collision with player
     this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
+      this.player.x = 0;
       chosenObject.destroy();
       this.score++;
       this.updateScore();
     });
 
     this.physics.add.collider(this.player, this.otherObjectGroup, (player, otherObject) => {
+      this.player.x = 0;
       otherObject.destroy();
     });
 
@@ -249,6 +257,7 @@ export class GameScene2 extends SwitchBase {
 
   resumeGameAndJump() {
     this.jump();
+
     this.scene.resume("GameScene2");
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
@@ -313,10 +322,10 @@ export class GameScene2 extends SwitchBase {
         targets: chosenObject,
         props: {
             y: { value: 0, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
-            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
+            x: { value: 0, duration: 10000, ease: 'Linear', yoyo: false}
         }
       });
-      chosenObject.setImmovable(true);
+      // chosenObject.setImmovable(true);
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.chosenObjectGroup.add(chosenObject);
     }
@@ -347,7 +356,7 @@ export class GameScene2 extends SwitchBase {
             x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
         }
     });
-      otherObject.setVelocityY(Math.random());
+      // otherObject.setVelocityY(Math.random());
       otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.otherObjectGroup.add(otherObject);
     }
@@ -359,15 +368,18 @@ export class GameScene2 extends SwitchBase {
       this.tweens.add({
       targets: this.player,
       props: {
-        y: {value: this.targetObject.y, duration: 2000},
-        x: {value: this.targetObject.x, duration: 2000},
+        y: {value: this.targetObject.y},
+        x: {value: this.targetObject.x}
       },
-      duration: 1000
+      duration: 200
     });
 }
 
   update() {
-    this.player.x = gameOptions.playerStartPosition;
+    if(this.player.x < gameOptions.playerStartPosition){
+      this.player.x = gameOptions.playerStartPosition;
+    }
+    
     // recycling chosenObjects
     let minDistance = +this.game.config.width;
     this.chosenObjectGroup
