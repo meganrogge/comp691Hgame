@@ -165,7 +165,9 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
     // adding a chosenObject or otherObject to the game at random
     Math.random() > .5 ? this.addOtherObject(100, (+this.game.config.width * 2) / 3) : this.addChosenObject(100, (+this.game.config.width * 2) / 3);
 
-    // adding a chosenObject collider so chosenObject disappears upon collision with player
+    // eventually want to remove these and handle everything within the tween. finding that difficult because
+    // the sprite doesn't know what type it is (a cookie, tennis ball, etc) and therefore doesn't know whether or not it
+    // should count towards the score
     this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
       this.player.x = 0;
       chosenObject.destroy();
@@ -378,6 +380,11 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
       },
     onComplete: () => {
       this.targetObject.setVisible(false);
+      console.log(this.targetObject.name);
+      if(gameOptions.chosenObjects.indexOf(this.targetObject) > -1){
+        this.score++;
+        this.updateScore();
+      }
     },
     duration: 200
   });
