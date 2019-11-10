@@ -104,14 +104,13 @@ export class GameScene2 extends SwitchBase {
       loop: true,
       repeat: -1
     };
-
     this.anims.create(config);
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,
       +this.game.config.height / 2,
       preferences.player
     );
-
+    this.player.setVelocityX(gameOptions.platformStartSpeed);
     this.player.setGravityY(gameOptions.playerGravity);
     this.player.anims.load('walk');
     this.player.anims.play('walk');
@@ -363,11 +362,6 @@ export class GameScene2 extends SwitchBase {
   }
 
   update() {
-  
-    if (this.player.x < gameOptions.playerStartPosition) {
-      this.player.x = gameOptions.playerStartPosition;
-    }
-
     let minDistance = +this.game.config.width;
     this.chosenObjectGroup
       .getChildren()
