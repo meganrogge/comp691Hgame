@@ -61,19 +61,19 @@ export class GameScene2 extends SwitchBase {
       frameHeight: 65,
       startFrame: 0,
       endFrame: 3
-  });
-  this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
-    frameWidth: 36,
-    frameHeight: 46,
-    startFrame: 0,
-    endFrame: 7
-});
-this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png', {
-  frameWidth: 250,
-  frameHeight: 301,
-  startFrame: 0,
-  endFrame: 8
-});
+    });
+    this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
+      frameWidth: 36,
+      frameHeight: 46,
+      startFrame: 0,
+      endFrame: 7
+    });
+    this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png', {
+      frameWidth: 250,
+      frameHeight: 301,
+      startFrame: 0,
+      endFrame: 8
+    });
     this.load.image("cookie", "assets/cookie.png");
     this.load.image("cupcake", "assets/cupcake.png");
     this.load.image("pie", "assets/pie.png");
@@ -92,22 +92,14 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
     this.load.image("pompom6", "assets/pompom6.png");
   }
 
-  printSceneInfo() {
-    console.log("is sleeping " + this.scene.isSleeping());
-    console.log("is paused " + this.scene.isPaused());
-    console.log("is visible " + this.scene.isVisible());
-    console.log("is active " + this.scene.isActive());
-  }
-
-  create(data): void {
-    
+  create(preferences): void {
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    this.cameras.main.setBackgroundColor(data.background);
+    this.cameras.main.setBackgroundColor(preferences.background);
     var config = {
       key: 'walk',
-      frames: this.anims.generateFrameNumbers(data.player, config),
+      frames: this.anims.generateFrameNumbers(preferences.player, config),
       frameRate: 10,
       loop: true,
       repeat: -1
@@ -117,15 +109,14 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,
       +this.game.config.height / 2,
-      data.player
+      preferences.player
     );
-    // this.player.setCollideWorldBounds(true, gameOptions.playerStartPosition);
 
     this.player.setGravityY(gameOptions.playerGravity);
     this.player.anims.load('walk');
     this.player.anims.play('walk');
 
-    switch (data.category) {
+    switch (preferences.category) {
       case "desserts":
         gameOptions.chosenObjects = gameOptions.map.desserts;
         gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
@@ -139,7 +130,6 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
         gameOptions.otherObjects = gameOptions.objects.filter(o => gameOptions.chosenObjects.indexOf(o) == -1);
         break;
     }
-    console.log(data);
 
     this.createButtons();
 
@@ -212,19 +202,19 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
   }
 
   updateScore() {
+    if(this.scoreBoard != undefined){
+      this.scoreBoard.destroy();
+    }
     var scoreBoardStyle = {
-      font: "128px Arial Bold",
+      font: "72px Arial Bold",
       boundsAlignH: "center",
       boundsAlignV: "middle",
-      fill: "#99badd",
-      backgroundColor: "#fff"
+      fill: "#fff"
     };
-    this.scoreBoard = this.add.text(500, 0, "Score: " + this.score, scoreBoardStyle);
+    this.scoreBoard = this.add.text(500, +this.game.config.width / 2 -25, "Score: " + this.score, scoreBoardStyle);
   }
 
   dealWithInput(key) {
-    this.printSceneInfo();
-    console.log(this.index);
     if (this.scene.isPaused("GameScene2")) {
       if (key == "ArrowRight") {
         if (this.index % 2 == 0) {
@@ -239,7 +229,6 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
   }
 
   dealWithButtons() {
-    console.log("dealing with buttons " + this.index);
     if (this.index % 2 == 1) {
       this.jumpButton.setBackgroundColor("#FFFF33");
       this.runButton.setBackgroundColor("#fff");
@@ -252,7 +241,6 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
 
   resumeGameAndJump() {
     this.jump();
-
     this.scene.resume("GameScene2");
     this.jumpButton.setVisible(false);
     this.runButton.setVisible(false);
@@ -265,8 +253,7 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
   }
 
   playerNearObject(object: Phaser.Physics.Arcade.Sprite) {
-    if(object.x - 600 > 0 && object.x - 600 < 2){
-      console.log(object);
+    if (object.x - 600 > 0 && object.x - 600 < 2) {
       this.targetObject = object;
       return true;
     } else {
@@ -274,7 +261,6 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
     }
   }
 
-  // the core of the script: platform are added from the pool or created on the fly
   addPlatform(platformWidth: number, posX: number) {
     let platform: Platform;
     if (this.platformPool.getLength()) {
@@ -299,6 +285,7 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
       gameOptions.spawnRange[1]
     );
   }
+
   addChosenObject(chosenObjectSize: number, posX: number) {
     let chosenObject: Phaser.Physics.Arcade.Sprite;
     if (this.chosenObjectPool.getLength()) {
@@ -311,16 +298,15 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
       let o = this.getRandomElement(gameOptions.chosenObjects);
       chosenObject = this.physics.add.sprite(
         posX,
-        +this.game.config.height-200,
+        +this.game.config.height - 200,
         o
       );
       this.tweens.add({
         targets: chosenObject,
         props: {
-            y: { value: 50, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
-            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
+          y: { value: 50, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1 },
+          x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false }
         }
-        
       });
       chosenObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.chosenObjectGroup.add(chosenObject);
@@ -341,16 +327,16 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
       let o = this.getRandomElement(gameOptions.otherObjects);
       otherObject = this.physics.add.sprite(
         posX,
-        +this.game.config.height-200,
+        +this.game.config.height - 200,
         o
       );
       this.tweens.add({
         targets: otherObject,
         props: {
-            y: { value: 50, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1},
-            x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false}
+          y: { value: 50, duration: 1000, ease: 'Sinusoidal', yoyo: true, repeat: -1 },
+          x: { value: -100, duration: 10000, ease: 'Linear', yoyo: false }
         }
-    });
+      });
       otherObject.setVelocityX(gameOptions.platformStartSpeed * -0.5);
       this.otherObjectGroup.add(otherObject);
     }
@@ -359,29 +345,29 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
   }
 
   jump() {
-      this.tweens.add({
+    this.tweens.add({
       targets: this.player,
       props: {
-        y: {value: this.targetObject.y},
-        x: {value: this.targetObject.x}
+        y: { value: this.targetObject.y },
+        x: { value: this.targetObject.x }
       },
-    onComplete: () => {
-      this.targetObject.setVisible(false);
-      if(gameOptions.chosenObjects.indexOf(this.targetObject.texture.key) > -1){
-        this.score++;
-        this.updateScore();
-        console.log(this.score);
-      }
-    },
-    duration: 200
-  });
-}
+      onComplete: () => {
+        this.targetObject.setVisible(false);
+        if (gameOptions.chosenObjects.indexOf(this.targetObject.texture.key) > -1) {
+          this.score++;
+          this.updateScore();
+        }
+      },
+      duration: 200
+    });
+  }
 
   update() {
-    if(this.player.x < gameOptions.playerStartPosition){
+  
+    if (this.player.x < gameOptions.playerStartPosition) {
       this.player.x = gameOptions.playerStartPosition;
     }
-    // recycling chosenObjects
+
     let minDistance = +this.game.config.width;
     this.chosenObjectGroup
       .getChildren()
