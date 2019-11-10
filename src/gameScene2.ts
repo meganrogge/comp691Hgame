@@ -35,6 +35,7 @@ export class GameScene2 extends SwitchBase {
   nextPlatformDistance = 0;
   index: number;
   score: number;
+  chosen: boolean;
   constructor() {
     super({
       key: "GameScene2"
@@ -118,6 +119,7 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
       +this.game.config.height / 2,
       data.player
     );
+    // this.player.setCollideWorldBounds(true, gameOptions.playerStartPosition);
 
     this.player.setGravityY(gameOptions.playerGravity);
     this.player.anims.load('walk');
@@ -164,21 +166,6 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
 
     // adding a chosenObject or otherObject to the game at random
     Math.random() > .5 ? this.addOtherObject(100, (+this.game.config.width * 2) / 3) : this.addChosenObject(100, (+this.game.config.width * 2) / 3);
-
-    // eventually want to remove these and handle everything within the tween. finding that difficult because
-    // the sprite doesn't know what type it is (a cookie, tennis ball, etc) and therefore doesn't know whether or not it
-    // should count towards the score
-    this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
-      this.player.x = 0;
-      chosenObject.destroy();
-      this.score++;
-      this.updateScore();
-    });
-
-    this.physics.add.collider(this.player, this.otherObjectGroup, (player, otherObject) => {
-      this.player.x = 0;
-      otherObject.destroy();
-    });
 
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
@@ -279,6 +266,7 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
 
   playerNearObject(object: Phaser.Physics.Arcade.Sprite) {
     if(object.x - 600 > 0 && object.x - 600 < 2){
+      console.log(object);
       this.targetObject = object;
       return true;
     } else {
@@ -341,7 +329,6 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
     chosenObject.displayHeight = chosenObjectSize;
   }
 
-
   addOtherObject(otherObjectSize: number, posX: number) {
     let otherObject: Phaser.Physics.Arcade.Sprite;
     if (this.otherObjectPool.getLength()) {
@@ -380,10 +367,10 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
       },
     onComplete: () => {
       this.targetObject.setVisible(false);
-      console.log(this.targetObject.name);
-      if(gameOptions.chosenObjects.indexOf(this.targetObject) > -1){
+      if(gameOptions.chosenObjects.indexOf(this.targetObject.texture.key) > -1){
         this.score++;
         this.updateScore();
+        console.log(this.score);
       }
     },
     duration: 200
@@ -394,7 +381,6 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
     if(this.player.x < gameOptions.playerStartPosition){
       this.player.x = gameOptions.playerStartPosition;
     }
-    
     // recycling chosenObjects
     let minDistance = +this.game.config.width;
     this.chosenObjectGroup
@@ -426,9 +412,9 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
         }
       }, this);
 
-    let chosen = Math.random() > .5;
+    this.chosen = Math.random() > .5;
 
-    if (chosen) {
+    if (this.chosen) {
       //adding new chosenObjects
       if (minDistance > this.nextPlatformDistance) {
         var nextChosenObjectWidth = Phaser.Math.Between(
@@ -453,8 +439,6 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
         );
       }
     }
-
-
     //adding a platform
     this.addPlatform(
       +this.game.config.width,
