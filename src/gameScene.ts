@@ -59,41 +59,41 @@ export class GameScene extends SwitchBase {
       frameHeight: 65,
       startFrame: 0,
       endFrame: 3
-  });
-  this.load.spritesheet("luigi", 'assets/sprite_sheets/luigi-spritesheet.png', {
-    frameWidth: 31,
-    frameHeight: 46,
-    startFrame: 0,
-    endFrame: 3
-});
-  this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
-    frameWidth: 36,
-    frameHeight: 46,
-    startFrame: 0,
-    endFrame: 7
-});
-this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png', {
-  frameWidth: 250,
-  frameHeight: 301,
-  startFrame: 0,
-  endFrame: 8
-});
-    this.load.image("cookie", "assets/cookie.png");
-    this.load.image("cupcake", "assets/cupcake.png");
-    this.load.image("pie", "assets/pie.png");
-    this.load.image("cake", "assets/cake.png");
-    this.load.image("icecream", "assets/icecream.png");
-    this.load.image("soccer", "assets/soccer.png");
-    this.load.image("tennis", "assets/tennis.png");
-    this.load.image("baseball", "assets/baseball.png");
-    this.load.image("basketball", "assets/basketball.png");
-    this.load.image("football", "assets/football.png");
-    this.load.image("pompom1", "assets/pompom1.png");
-    this.load.image("pompom2", "assets/pompom2.png");
-    this.load.image("pompom3", "assets/pompom3.png");
-    this.load.image("pompom4", "assets/pompom4.png");
-    this.load.image("pompom5", "assets/pompom5.png");
-    this.load.image("pompom6", "assets/pompom6.png");
+    });
+    this.load.spritesheet("luigi", 'assets/sprite_sheets/luigi-spritesheet.png', {
+      frameWidth: 31,
+      frameHeight: 46,
+      startFrame: 0,
+      endFrame: 3
+    });
+    this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
+      frameWidth: 36,
+      frameHeight: 46,
+      startFrame: 0,
+      endFrame: 7
+    });
+    this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png', {
+      frameWidth: 250,
+      frameHeight: 301,
+      startFrame: 0,
+      endFrame: 8
+    });
+    this.load.image("cookie", "assets/sprites/cookie.png");
+    this.load.image("cupcake", "assets/sprites/cupcake.png");
+    this.load.image("pie", "assets/sprites/pie.png");
+    this.load.image("cake", "assets/sprites/cake.png");
+    this.load.image("icecream", "assets/sprites/icecream.png");
+    this.load.image("soccer", "assets/sprites/soccer.png");
+    this.load.image("tennis", "assets/sprites/tennis.png");
+    this.load.image("baseball", "assets/sprites/baseball.png");
+    this.load.image("basketball", "assets/sprites/basketball.png");
+    this.load.image("football", "assets/sprites/football.png");
+    this.load.image("pompom1", "assets/sprites/pompom1.png");
+    this.load.image("pompom2", "assets/sprites/pompom2.png");
+    this.load.image("pompom3", "assets/sprites/pompom3.png");
+    this.load.image("pompom4", "assets/sprites/pompom4.png");
+    this.load.image("pompom5", "assets/sprites/pompom5.png");
+    this.load.image("pompom6", "assets/sprites/pompom6.png");
   }
 
   printSceneInfo() {
@@ -115,7 +115,7 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
       loop: true,
       repeat: -1
     };
-    
+
     this.anims.create(config);
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,

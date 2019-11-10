@@ -40,7 +40,7 @@ export class ChoiceScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image("platform", "assets/platform.png");
+        this.load.image("platform", "assets/sprites/platform.png");
         this.load.spritesheet("woman", 'assets/sprite_sheets/woman-spritesheet.png', {
             frameWidth: 69,
             frameHeight: 90,
@@ -77,9 +77,9 @@ export class ChoiceScene extends Phaser.Scene {
             startFrame: 0,
             endFrame: 8
         });
-        this.load.image("sports", "assets/sports.png");
-        this.load.image("desserts", "assets/desserts.png");
-        this.load.image("cheerleading", "assets/cheerleading.jpg");
+        this.load.image("sports", "assets/sprites/sports.png");
+        this.load.image("desserts", "assets/sprites/desserts.png");
+        this.load.image("cheerleading", "assets/sprites/cheerleading.jpg");
     }
 
     create(): void {
