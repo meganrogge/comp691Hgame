@@ -5,6 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "build": "webpack",
+    "tsc": "tsc",
     "start": "webpack --watch & live-server --port=8085",
     "pages": "git checkout gh-pages; git merge --no-commit master; npm run build; git add dist/app.js; git commit -m 'update pages'; git push origin gh-pages; git checkout master"
   },
