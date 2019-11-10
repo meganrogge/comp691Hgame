@@ -1,5 +1,7 @@
 import "phaser";
+/** @typedef {import('phaser')} Phaser */
 import { SwitchBase } from "./base";
+import { Sound } from "phaser";
 
 // global game options
 let gameOptions = {
@@ -32,10 +34,12 @@ export class GameScene2 extends SwitchBase {
   scoreBoard: Phaser.GameObjects.Text;
   playerAnim: Phaser.Animations.Animation;
   playerJumps = 0;
+  sound: Phaser.Sound.WebAudioSoundManager;
   nextPlatformDistance = 0;
   index: number;
   score: number;
   chosen: boolean;
+ 
   constructor() {
     super({
       key: "GameScene2"
@@ -74,25 +78,31 @@ export class GameScene2 extends SwitchBase {
       startFrame: 0,
       endFrame: 8
     });
-    this.load.image("cookie", "assets/cookie.png");
-    this.load.image("cupcake", "assets/cupcake.png");
-    this.load.image("pie", "assets/pie.png");
-    this.load.image("cake", "assets/cake.png");
-    this.load.image("icecream", "assets/icecream.png");
-    this.load.image("soccer", "assets/soccer.png");
-    this.load.image("tennis", "assets/tennis.png");
-    this.load.image("baseball", "assets/baseball.png");
-    this.load.image("basketball", "assets/basketball.png");
-    this.load.image("football", "assets/football.png");
-    this.load.image("pompom1", "assets/pompom1.png");
-    this.load.image("pompom2", "assets/pompom2.png");
-    this.load.image("pompom3", "assets/pompom3.png");
-    this.load.image("pompom4", "assets/pompom4.png");
-    this.load.image("pompom5", "assets/pompom5.png");
-    this.load.image("pompom6", "assets/pompom6.png");
+
+    this.load.image("cookie", "assets/sprites/cookie.png");
+    this.load.image("cupcake", "assets/sprites/cupcake.png");
+    this.load.image("pie", "assets/sprites/pie.png");
+    this.load.image("cake", "assets/sprites/cake.png");
+    this.load.image("icecream", "assets/sprites/icecream.png");
+    this.load.image("soccer", "assets/sprites/soccer.png");
+    this.load.image("tennis", "assets/sprites/tennis.png");
+    this.load.image("baseball", "assets/sprites/baseball.png");
+    this.load.image("basketball", "assets/sprites/basketball.png");
+    this.load.image("football", "assets/sprites/football.png");
+    this.load.image("pompom1", "assets/sprites/pompom1.png");
+    this.load.image("pompom2", "assets/sprites/pompom2.png");
+    this.load.image("pompom3", "assets/sprites/pompom3.png");
+    this.load.image("pompom4", "assets/sprites/pompom4.png");
+    this.load.image("pompom5", "assets/sprites/pompom5.png");
+    this.load.image("pompom6", "assets/sprites/pompom6.png");
+
+    this.load.audio('bounce', 'assets/audio/bounce.mp3');
   }
 
   create(preferences): void {
+
+    let bounceNoise = this.sound.add('bounce');
+    bounceNoise.play();
     this.score = 0;
     this.updateScore();
     this.index = 0;

@@ -10,7 +10,7 @@ let gameOptions = {
   playerStartPosition: 200,
   jumps: 2,
   chosenObject: null,
-  map: {"desserts": ["cookie", "cupcake", "icecream", "pie", "cake"], "sports": ["soccer", "tennis", "baseball", "basketball", "football"], "cheerleading": ["pompom1",  "pompom2",  "pompom3", "pompom4", "pompom5", "pompom6"]}
+  map: { "desserts": ["cookie", "cupcake", "icecream", "pie", "cake"], "sports": ["soccer", "tennis", "baseball", "basketball", "football"], "cheerleading": ["pompom1", "pompom2", "pompom3", "pompom4", "pompom5", "pompom6"] }
 };
 
 type Platform = Phaser.Physics.Arcade.Sprite;
@@ -39,7 +39,7 @@ export class GameNoFailScene extends Phaser.Scene {
 
   preload(): void {
     this.load.image("platform", "assets/platform.png");
-    this.load.spritesheet("woman", 'assets/sprite_sheets/woman-spritesheet.png',{
+    this.load.spritesheet("woman", 'assets/sprite_sheets/woman-spritesheet.png', {
       frameWidth: 69,
       frameHeight: 90,
       startFrame: 0,
@@ -56,41 +56,41 @@ export class GameNoFailScene extends Phaser.Scene {
       frameHeight: 65,
       startFrame: 0,
       endFrame: 3
-  });
-  this.load.spritesheet("luigi", 'assets/sprite_sheets/luigi-spritesheet.png', {
-    frameWidth: 31,
-    frameHeight: 46,
-    startFrame: 0,
-    endFrame: 3
-});
-  this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
-    frameWidth: 36,
-    frameHeight: 46,
-    startFrame: 0,
-    endFrame: 7
-});
-this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png', {
-  frameWidth: 250,
-  frameHeight: 301,
-  startFrame: 0,
-  endFrame: 8
-});
-    this.load.image("cookie", "assets/cookie.png");
-    this.load.image("cupcake", "assets/cupcake.png");
-    this.load.image("pie", "assets/pie.png");
-    this.load.image("cake", "assets/cake.png");
-    this.load.image("icecream", "assets/icecream.png");
-    this.load.image("soccer", "assets/soccer.png");
-    this.load.image("tennis", "assets/tennis.png");
-    this.load.image("baseball", "assets/baseball.png");
-    this.load.image("basketball", "assets/basketball.png");
-    this.load.image("football", "assets/football.png");
-    this.load.image("pompom1", "assets/pompom1.png");
-    this.load.image("pompom2", "assets/pompom2.png");
-    this.load.image("pompom3", "assets/pompom3.png");
-    this.load.image("pompom4", "assets/pompom4.png");
-    this.load.image("pompom5", "assets/pompom5.png");
-    this.load.image("pompom6", "assets/pompom6.png");
+    });
+    this.load.spritesheet("luigi", 'assets/sprite_sheets/luigi-spritesheet.png', {
+      frameWidth: 31,
+      frameHeight: 46,
+      startFrame: 0,
+      endFrame: 3
+    });
+    this.load.spritesheet("mario", 'assets/sprite_sheets/mario-spritesheet.png', {
+      frameWidth: 36,
+      frameHeight: 46,
+      startFrame: 0,
+      endFrame: 7
+    });
+    this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png', {
+      frameWidth: 250,
+      frameHeight: 301,
+      startFrame: 0,
+      endFrame: 8
+    });
+    this.load.image("cookie", "assets/sprites/cookie.png");
+    this.load.image("cupcake", "assets/sprites/cupcake.png");
+    this.load.image("pie", "assets/sprites/pie.png");
+    this.load.image("cake", "assets/sprites/cake.png");
+    this.load.image("icecream", "assets/sprites/icecream.png");
+    this.load.image("soccer", "assets/sprites/soccer.png");
+    this.load.image("tennis", "assets/sprites/tennis.png");
+    this.load.image("baseball", "assets/sprites/baseball.png");
+    this.load.image("basketball", "assets/sprites/basketball.png");
+    this.load.image("football", "assets/sprites/football.png");
+    this.load.image("pompom1", "assets/sprites/pompom1.png");
+    this.load.image("pompom2", "assets/sprites/pompom2.png");
+    this.load.image("pompom3", "assets/sprites/pompom3.png");
+    this.load.image("pompom4", "assets/sprites/pompom4.png");
+    this.load.image("pompom5", "assets/sprites/pompom5.png");
+    this.load.image("pompom6", "assets/sprites/pompom6.png");
   }
 
   printSceneInfo() {
@@ -104,18 +104,18 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
     this.score = 0;
     this.updateScore();
     this.index = 0;
-    
+
     this.cameras.main.setBackgroundColor(data.background);
     console.log(data);
-    switch(data.category){
+    switch (data.category) {
       case "desserts":
-          gameOptions.chosenObject = gameOptions.map.desserts;
-          break;
+        gameOptions.chosenObject = gameOptions.map.desserts;
+        break;
       case "sports":
-          gameOptions.chosenObject = gameOptions.map.sports;
-          break;
+        gameOptions.chosenObject = gameOptions.map.sports;
+        break;
       case "cheerleading":
-          gameOptions.chosenObject = gameOptions.map.cheerleading;   
+        gameOptions.chosenObject = gameOptions.map.cheerleading;
     }
     console.log(gameOptions.chosenObject);
     this.createButtons();
@@ -145,18 +145,18 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
       frameRate: 10,
       loop: true,
       repeat: -1
-  };
+    };
 
-  this.anims.create(config);
-  this.player = this.physics.add.sprite(
-    gameOptions.playerStartPosition,
-    +this.game.config.height / 2,
-    data.player
-  );
- 
-  this.player.setGravityY(gameOptions.playerGravity);
-  this.player.anims.load('walk');
-  this.player.anims.play('walk');
+    this.anims.create(config);
+    this.player = this.physics.add.sprite(
+      gameOptions.playerStartPosition,
+      +this.game.config.height / 2,
+      data.player
+    );
+
+    this.player.setGravityY(gameOptions.playerGravity);
+    this.player.anims.load('walk');
+    this.player.anims.play('walk');
 
     // adding a chosenObject collider so chosenObject disappears upon collision with player
     this.physics.add.collider(this.player, this.chosenObjectGroup, (player, chosenObject) => {
@@ -170,8 +170,8 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
     // to do : disable input when scene isn't paused
 
     document.addEventListener("keydown", e => {
-      if (e.key == " "  || e.key == "Enter" || e.key == "ArrowLeft" || e.key == "ArrowRight") {
-        if(e.key == "Enter" || e.key == "ArrowRight"){
+      if (e.key == " " || e.key == "Enter" || e.key == "ArrowLeft" || e.key == "ArrowRight") {
+        if (e.key == "Enter" || e.key == "ArrowRight") {
           this.dealWithInput("ArrowRight")
         } else {
           this.dealWithInput("ArrowLeft");
@@ -240,7 +240,7 @@ this.load.spritesheet("soldier", 'assets/sprite_sheets/soldier-spritesheet.png',
   }
 
   dealWithButtons() {
-    console.log("dealing with buttons "+this.index);
+    console.log("dealing with buttons " + this.index);
     if (this.index % 2 == 1) {
       this.jumpButton.setBackgroundColor("#FFFF33");
       this.runButton.setBackgroundColor("#fff");
