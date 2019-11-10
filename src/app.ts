@@ -20,7 +20,6 @@ const config: Phaser.Types.Core.GameConfig = {
   }
 };
 
-
 export class StarfallGame extends Phaser.Game {
   constructor(config: Phaser.Types.Core.GameConfig) {
     super(config);
