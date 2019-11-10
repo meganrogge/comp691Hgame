@@ -156,7 +156,7 @@ export class ChoiceScene extends Phaser.Scene {
                 this.chosenMode = this.currentMode;
                 this.currentState = "Game";
                 console.log("set mode");
-                this.scene.start(this.chosenMode, { baackground: this.chosenBackground, player: this.chosenPlayer, category: this.chosenCategory });
+                this.scene.start(this.chosenMode, { background: this.chosenBackground, player: this.chosenPlayer, category: this.chosenCategory });
         }
     }
 
